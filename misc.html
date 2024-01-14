@@ -1,59 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="stylesheet" href="styles.css" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.15.1/devicon.min.css">
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title> Miscellaneous </title>
-    <style>
-    .maxArticleWidth {
-        max-width:800px;
-    }
-    .maxWidth {
-        max-width:600px;
-    }
-    </style>
-    
 </head>
 <body>
-    <nav class="navbar navbar-dark navbar-expand-lg bg-dark">
-        <div class="container-fluid">
-            <div class="mx-4">
-                <a class="navbar-brand" href="index.html">Index</a>
-            </div>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false"
-                aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link" href="projects.html">Projects</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Misc</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
+    <div id="navbar"></div>
     <div class="container-fluid my-4" style="max-width:95%" >
         <div class ="row">
-            <div class="col-sm-2" style="position:fixed">
+
+            <div class="col-sm-3 d-none d-sm-block" style="position:fixed">
+                    Jump to:
                     <li><a href="#HP6632B">6632B</a></li>
                     <li><a href="#54624A">54624A</a></li>
                     <li><a href="#KP61">KP61</a></li>
+                    <li><a href="#tensile">Tensile tester</a></li>
             </div>
 
-            <div class="col-md-auto offset-sm-2">
-                <div class="container-responsive maxArticleWidth">
+            <div class="col-md offset-sm-3">
+                <div class="container-fluid maxArticleWidth">
                     <h4 id="HP6632B">6632B</h4>
                         <p>
-                        <img src="hp6632b/frontpanel.jpg" class="img-responsive float-left maxWidth"></img><br>
+                        <img src="hp6632b/frontpanel.jpg" class="img-responsive float-left maxImageWidth"></img><br>
                             This is my ancient 6632B (On top of it is a less ancient Amrel PPS-2322). It has a couple of important mods:
                             <li>Front output terminals</li>
                             <li>RIFA caps replaced with new polymer caps</li>
@@ -61,46 +34,63 @@
                         </p>
 
                         <p>
-                            <img src="hp6632b/bananajacks.jpg" class="img-responsive float-left maxWidth"></img><br>
-                            The wiring behind the front panel.
+                            <img src="hp6632b/bananajacks.jpg" class="img-responsive float-left maxImageWidth"></img><br>
+                            The wiring behind the front panel. The sense lines can be directly connected to the outputs, or routed out to the sense terminals.
                         </p>
 
                         <p>
-                            <img src="hp6632b/outputconnector.jpg" class="img-responsive float-left maxWidth"></img><br>
-                            The terminals run all the way to this connector at the rear of the unit. Some of the replacement polymer caps are visible here.
+                            <img src="hp6632b/acinput.jpg" class="img-responsive float-left maxImageWidth"></img><br>
+                            The mains filter with replacement caps fitted.
+                        </p>
+
+                        <p>
+                            <img src="hp6632b/outputconnector.jpg" class="img-responsive float-left maxImageWidth"></img><br>
+                            The output cabling runs all the way to this connector at the rear of the unit. This was not meant to be a benchtop unit.
                         </p>
                     <br>
 
                     <h4 id="54624A">54624A</h4>
                         <p> 
-                        <img src="54624A/frontpanel.jpg" class="img-responsive float-left maxWidth"></img><br>
+                        <img src="54624A/frontpanel.jpg" class="img-responsive float-left maxImageWidth"></img><br>
                         This is my ancient 54624A. It's another early MegaZoom II-powered unit, like the well-known 54622D. For everything ~20MHz and below, this is great. It's actually more responsive than the new Teks at my school.
                         </p>
 
                         <p>
-                        <img src="54624A/parts.jpg" class="img-responsive float-left maxWidth"></img><br>
+                        <img src="54624A/parts.jpg" class="img-responsive float-left maxImageWidth"></img><br>
                         This one came with a host of issues, most of them caused by a dead NVRAM backup battery. The original part is a very elusive CR2354-GUFN, 
-                        so it was replaced with a little socketed CR2032. Only the user cal is stored in NVRAM, so mercifully it doesn't need to be powered while doing the replacement (unlike on some HP multimeters).
+                        so it was replaced with a little socketed CR2032. Only the user cal and settings are stored in NVRAM, so mercifully it doesn't need to be powered while doing the replacement (unlike on some HP multimeters).
                         </p>
 
                         <p>
-                        <img src="54624A/battery.jpg" class="img-responsive float-left maxWidth"></img><br>
-                        The new battery installed on the mainboard.
+                        <img src="54624A/battery.jpg" class="img-responsive float-left maxImageWidth"></img><br>
+                        The new battery installed on the mainboard. 
                         </p>   
                     <br>
                     
                     <h4 id="KP61">KP61 in 1/48 scale</h4>
                         <p> 
-                        <img src="kp61/kp61_closed.JPG" class="img-responsive float-left maxWidth"></img><br>
-                        Just for fun. It's a Toyota KP61, made from paper and cardstock. I'm not actually a <i>car guy</i> but I've always liked this one, it's very cute. 
+                        <img src="kp61/kp61_closed.JPG" class="img-responsive float-left maxImageWidth"></img><br>
+                        Just for fun. It's a Toyota KP61, made from paper and cardstock a long time ago. I'm not actually a <i>car guy</i> but I just like this car, it's very cute. 
                         </p>
 
-                        <p><img src="kp61/kp61_left.JPG" class="img-responsive float-left maxWidth"></img><br>
+                        <p><img src="kp61/kp61_left.JPG" class="img-responsive float-left maxImageWidth"></img><br>
                         A look inside the cabin.</p>
                         
-                        <p><img src="kp61/kp61_open.JPG" class="img-responsive float-left maxWidth"></img><br>
+                        <p><img src="kp61/kp61_open.JPG" class="img-responsive float-left maxImageWidth"></img><br>
                         A look inside the engine bay. I think that's meant to be a 4AGE in there.  </p>
                     </p>
+                    <br>
+
+                    <h4 id="tensile">Low-force tensile tester</h4>
+                        <p> 
+                        <img src="tensile/prototyping.jpg" class="img-responsive float-left maxImageWidth maxImageHeight"></img><br>
+                        This was a temporary testbed for SPI TFT displays, ADC interfacing, stepper driving using STM32. I'll need to rebuild this someday. 
+                        </p>
+
+                        <p>
+                        <iframe height="700" width="400" src="https://www.youtube.com/embed/haqdJxyElk4"></iframe><br>
+                        Gateron brown force curve (keyboard switch) as measured by a 1kg load cell. 
+                        </p>
                     <br>
                 </div>
             </div>
@@ -111,7 +101,7 @@
     </div>
 
     <!-- JavaScript: Above  -->
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"> </script> <script>$("#navbar").load("/navbar.html"); </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 </body>
 </html>

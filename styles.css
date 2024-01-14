@@ -1,0 +1,14 @@
+.maxArticleWidth {
+    max-width:800px;
+}
+.maxImageWidth {
+    max-width:600px;
+}
+
+.maxImageHeight {
+    max-height:600px;
+}
+
+h4 {
+    color: black
+}

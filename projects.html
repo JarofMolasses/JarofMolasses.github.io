@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="stylesheet" href="styles.css" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.15.1/devicon.min.css">
     <meta charset="UTF-8">
@@ -9,62 +10,61 @@
     <title> Projects </title>
 </head>
 <body>
-    <nav class="navbar navbar-dark navbar-expand-lg bg-dark sticky-top">
-        <div class="container-fluid">
-            <div class="mx-4">
-                <a class="navbar-brand" href="index.html">Index</a>
+    <div id="navbar"></div>
+    <div class="container-fluid my-4" style="max-width:95%">
+        <div class="row">
+            <div class="col-sm-3 d-none d-sm-block" style="position:fixed">
+                Jump to:
+                <li><a href="#macroscope">Macroscope</a></li>
+                <li><a href="#ocm">OCM</a></li>
+                <li><a href="#ssopad">SSOpad</a></li>
+                <li><a href="#vcube">Virtual cube</a></li>
             </div>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false"
-                aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link" href="projects.html">Projects</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="misc.html">Misc</a>
-                    </li>
-                </ul>
+            <div class = "col-md offset-sm-3">
+                <div class="container-fluid maxArticleWidth">
+                    
+                    <a href="https://github.com/jarofmolasses/macroscope"><h4 id="macroscope">Macroscope</h4></a>
+                    <p>       
+                        <img src="macroscope/macroscope1.jpg" class="img-responsive maxImageWidth"></img><br>
+                        A constant-height, contact mode atomic force microscope/profilometer.<br>
+                    </p>
+                    <p>
+                        <img src="macroscope/nickelTest88x88.jpg" class="img-responsive maxImageWidth"></img><br>
+                        Scan of a nickel at 88 x 88 pixels.
+                    </p>
+
+                    <a href=""><h4 id="ocm">Capstone: OCM</h4></a>
+                    <p>                        
+                        <img src="OCM/main.jpg" class="img-responsive float-left maxImageWidth"></img><br>
+                        A variable-diameter endoscope test fixture mount for Intuitive Surgical. <br>
+                        <small><i>With Phoebe Cheung, Cameron Lee-Ming, and Adam Metwally. </i></small>
+                    </p>
+
+                    <a href="https://github.com/JarofMolasses/qmk_firmware/tree/I2C_LCD/keyboards/ssopads"><h4 id="ssopad">SSOpad</h4></a>
+                    <p>     
+                        18-key macropad with support for 20x4 character LCDs over I2C, OLEDs, and rotary encoders. 
+                        <img src="ssopad/2004.jpg" class="img-responsive float-left maxImageWidth"></img><br>
+                        20x4 LCD version, which doubles as a binary-hex-decimal converter.
+                    </p>
+
+                    <p>     
+                        <img src="ssopad/oled.jpg" class="img-responsive float-left maxImageWidth"></img><br>
+                        OLED version with rotary encoder, used to display current keymap.
+                    </p>
+
+                    <a href="https://github.com/JarofMolasses/RubiksCubeSolver-Mod"><h4 id="vcube">Virtual cube</h4></a>
+                    <p>                        
+                        <img src="virtualrubik/demosolve.gif" class="img-responsive float-left maxImageWidth"></img><br>
+                        A simple 3x3 cube simulator built in C#. Based on <a href="https://github.com/StarGate01/VirtualRubik">VirtualRubik</a> and adds timing, new 3D rendering, advanced movesets, reconstructions.
+                    </p>
+                </div>
             </div>
+            <div class = "col"></div>
         </div>
-    </nav>
-
-    <div class="container-fluid my-4 ">
-        <p>
-            <!-- Imagine if this was super legit with like pagination and stuff like that. like a real website-->
-            <h5>Macroscope</h5>
-            <p> 
-                <i>Constant-height, contact mode atomic force macroscope/ profilometer</i> 
-            </p>
-
-            <h5>Capstone: OCM</h5>
-            <p> 
-                <i>Endoscope test fixture mount with self-centering mechanism</i>
-            </p>
-
-            <h5>SSOpad 1.2</h5>          
-            <p> 
-                <i>Prototype 18-key macropad with OLED/LCD</i>
-            </p>  
-
-            <h5>Tensile tester</h5>
-            <p> 
-                <i>Uniaxial 100N (10kg) tensile tester</i> 
-            </p>
-
-            <h5>Virtual cube</h5>
-            <p> 
-                <i>Reconstruction and timer mod for <a href="https://github.com/StarGate01/VirtualRubik/tree/master/VirtualRubik">VirtualRubik</a></i>
-            </p>
-
-        </p>
     </div>
 
     <!-- JavaScript: Above  -->
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"> </script> <script>$("#navbar").load("/navbar.html"); </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 </body>
 </html>
