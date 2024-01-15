@@ -9,6 +9,35 @@
     max-height:600px;
 }
 
-h4 {
-    color: black
+.fancytitle {
+    font-family: 'Century Gothic';
+    color: #111;
 }
+
+.vertical-center {
+    min-height: 100%;  /* Fallback for browsers do NOT support vh unit */
+    min-height: 80vh; /* These two lines are counted as one :-)       */
+  
+    display: flex;
+    align-items: center;
+  }
+
+body,html {
+    font-family:'Segoe UI';
+    background-color: lightgray;
+    color: #444;
+    height: 100%
+}
+h4 {
+    font-family:'Segoe UI';
+    color: #444;
+}
+
+a:link {
+    text-decoration:none;
+}
+a:hover {
+    text-decoration:underline;
+}
+
+

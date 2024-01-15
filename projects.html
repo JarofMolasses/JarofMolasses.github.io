@@ -1,36 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="styles.css" />
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.15.1/devicon.min.css">
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">    
+    <link rel="stylesheet" href="styles.css" />
     <title> Projects </title>
 </head>
 <body>
     <div id="navbar"></div>
-    <div class="container-fluid my-4" style="max-width:95%">
+    <div class="container-fluid my-4" style="max-width:97%">
         <div class="row">
             <div class="col-sm-3 d-none d-sm-block" style="position:fixed">
                 Jump to:
+                <ul>
                 <li><a href="#macroscope">Macroscope</a></li>
                 <li><a href="#ocm">OCM</a></li>
                 <li><a href="#ssopad">SSOpad</a></li>
                 <li><a href="#vcube">Virtual cube</a></li>
+                </ul>
             </div>
-            <div class = "col-md offset-sm-3">
-                <div class="container-fluid maxArticleWidth">
+            <div class = "col-lg offset-sm-3 maxArticleWidth">
+                <div class="container-fluid">
                     
                     <a href="https://github.com/jarofmolasses/macroscope"><h4 id="macroscope">Macroscope</h4></a>
                     <p>       
-                        <img src="macroscope/macroscope1.jpg" class="img-responsive maxImageWidth"></img><br>
+                        <img src="macroscope/macroscope1.jpg" class="img-responsive float-left maxImageWidth"></img><br>
                         A constant-height, contact mode atomic force microscope/profilometer.<br>
-                    </p>
-                    <p>
-                        <img src="macroscope/nickelTest88x88.jpg" class="img-responsive maxImageWidth"></img><br>
-                        Scan of a nickel at 88 x 88 pixels.
                     </p>
 
                     <a href=""><h4 id="ocm">Capstone: OCM</h4></a>
@@ -40,26 +38,37 @@
                         <small><i>With Phoebe Cheung, Cameron Lee-Ming, and Adam Metwally. </i></small>
                     </p>
 
-                    <a href="https://github.com/JarofMolasses/qmk_firmware/tree/I2C_LCD/keyboards/ssopads"><h4 id="ssopad">SSOpad</h4></a>
-                    <p>     
-                        18-key macropad with support for 20x4 character LCDs over I2C, OLEDs, and rotary encoders. 
-                        <img src="ssopad/2004 .JPG" class="img-responsive float-left maxImageWidth"></img><br>
-                        20x4 LCD version, which doubles as a binary-hex-decimal converter.
-                    </p>
-                    <p>     
-                        <img src="ssopad/oled .JPG" class="img-responsive float-left maxImageWidth"></img><br>
-                        OLED version with rotary encoder, used to display current keymap. 
-                    </p>
-
+                    <a href="https://github.com/JarofMolasses/qmk_firmware/tree/I2C_LCD/keyboards/ssopads"><h4 id="ssopad">SSOpad</h4></a>   
+                    A custom 18-key macropad using QMK firmware.
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col">
+                            <p>    
+                            <img src="ssopad/2004 .JPG" class="img-fluid float-left"></img><br>
+                            <i>20x4 LCD version, which doubles as a binary-hex-decimal converter.</i>
+                            </p>
+                            </div>
+                            <div class="col">
+                            <p>     
+                            <img src="ssopad/oled .JPG" class="img-fluid float-left"></img><br>
+                            <i>OLED version with rotary encoder, used to display current keymap. </i>
+                            </p>    
+                            </div>
+                        </div>    
+                    </div>
+                    
                     <a href="https://github.com/JarofMolasses/RubiksCubeSolver-Mod"><h4 id="vcube">Virtual cube</h4></a>
                     <p>                        
                         <img src="virtualrubik/demosolve.gif" class="img-responsive float-left maxImageWidth"></img><br>
-                        A simple 3x3 cube simulator built in C#. Based on <a href="https://github.com/StarGate01/VirtualRubik">VirtualRubik</a> and adds timing, new 3D rendering, advanced movesets, reconstructions.
+                        A simple 3x3 cube simulator built in C#. 
+                        Based on <a href="https://github.com/StarGate01/VirtualRubik">VirtualRubik</a> 
+                        and adds the timer elements, nicer (IMO) rendering, parallel moves, reconstructions.
                     </p>
                 <br>
                 </div>
             </div>
-            <div class = "col"></div>
+            <div class = "col">
+            </div>
         </div>
     </div>
 
