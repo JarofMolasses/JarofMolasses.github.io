@@ -30,7 +30,7 @@
                 <p> 
                     In this project, our team created a specialized test fixture mount which holds endoscopes for testing and validation. The key feature of the mount is that endoscopes of varying diameter can be held repeatably in the same position.
                     The target repeatability was within the 100 micron and 100 arcsecond range.
-                    I was primarily responsible for the creation of the fundamental geometry and the design of a spring-detented locking mechanism in Solidworks.
+                    I was primarily responsible for the creation of the fundamental arm geometry and the design of a spring-detented locking mechanism in Solidworks.
                 </p>
 
                 <p>
@@ -40,7 +40,7 @@
 
                 <p>
                     This core idea is not a new one, as it was first documented in a 1992 <a href="https://patents.google.com/patent/US5168168A/en">Newport patent</a>. For our implementation, I rederived the governing geometrical relationships to be able to use a straight top arm. 
-                    This, in theory, could yield less profile error in CNC machining.
+                    This was done in order to reduce the complexity of the machining process and in theory, improve the profile tolerance on the top arm.
                 </p>
 
                 <p>
@@ -58,7 +58,7 @@
                 <p>
                     <img src="OCM/finalcrop.jpg" class="img-fluid maxImageWidth"></img><br>
                     Close up of testing apparatus and GUI. The testing apparatus used four dial indicators, whose serial outputs were polled by a microcontroller and transmitted to a PC over a USB connection. 
-                    At each end, a pair of dial indicators measures the center position of a test cylinder (relative to a chosen reference cylinder's center position). 
+                    At each end, a pair of dial indicators measures the center position of a test cylinder (relative to a chosen reference cylinder's center position). From the pair of center positions, the relative pitch and yaw of the shaft could also be measured.
                     The repeatability of the mount was tested by installing and uninstalling steel driveshafts of different diameters and measuring the variance in the center position. <br>
                 </p>
 
