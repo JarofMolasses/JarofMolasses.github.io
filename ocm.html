@@ -28,25 +28,32 @@
                 </p>
 
                 <p> 
-                    In this project, our team created a specialized test fixture mount which holds endoscopes for testing and validation. The key feature of the mount is that endoscopes of varying diameter can be held repeatably in the same position.
-                    The target repeatability was within the 100 micron and 100 arcsecond range.
-                    I was primarily responsible for the creation of the fundamental arm geometry and the design of a spring-detented locking mechanism in Solidworks.
+                    In this project, our team created a test fixture mount which holds endoscopes for testing and validation. The key feature of the mount is that endoscopes of varying diameter can be held repeatably in the same position.
+                    The target repeatability limits were within the 100 micron and 100 arcsecond range.
+                    I was primarily responsible for generating the fundamental arm geometry and the design of a spring-detented locking mechanism. I also created a small datalogging instrument with PC GUI to automate the collection of test data.
                 </p>
 
                 <p>
                     <img src="OCM/errorchecking.jpg" class="img-fluid maxImageWidth"></img><br>
                     The endoscope is held between two arms, top and bottom. The top and bottom arms are coupled using a gear mechanism, and the combination of the arm geometry and the gear ratio ensures that any circle within a range of diameters will be held at the same center. 
                 </p>
+                
+                <p>
+                    <img src="OCM/detentsketch.jpg" class="img-fluid maxImageWidth"></img><br>
+                    A rough sketch of the detent mechanism, which mounts underneath the bottom arm. The mechanism, under spring tension, locks the arms in either the open or closed positions.
+                </p>
+
 
                 <p>
-                    This core idea is not a new one, as it was first documented in a 1992 <a href="https://patents.google.com/patent/US5168168A/en">Newport patent</a>. For our implementation, I rederived the governing geometrical relationships to be able to use a straight top arm. 
-                    This was done in order to reduce the complexity of the machining process and in theory, improve the profile tolerance on the top arm.
+                    This core idea is not a new one, as it was first documented in a 1992 <a href="https://patents.google.com/patent/US5168168A/en">Newport patent</a>. 
+                    For our implementation, I rederived the governing relationships to use a straight top arm. In the original design, a single rounded point is used for the top contact, and in our implementation we use a tangent line. 
+                    This was primarily done to reduce the difficulty of machining and inspection - it was easier to ensure the profile accuracy of a straight feature than a more complex curve.
                 </p>
 
                 <p>
                     <img src="OCM/curvegeneration.jpg" class="img-fluid maxImageWidth"></img><br>
-                    The intrinsic function of the mount is based on the specific geometry of the bottom arm in the clamp, which contains two numerically defined curves. In the figure above, the blue and orange curves trace the profile of the bottom arm as it touches off on a range of radii from 0 to r_max=10mm. 
-                    The green curve shows the contact point of the top arm. The gear ratio is given by C=4/3, and the distance between the arm pivots and the virtual center point is R=19.9mm. The curves were generated using a python script.
+                    The function of the mount relies on the specific geometry of the bottom arm in the clamp, which contains two numerically defined curves. In the figure above, the blue and orange curves trace the profile of the bottom arm. 
+                    The green curve shows the movement of the contact point of the top arm. Here, the design is intended to work for radii up to r_max=10mm, the gear ratio is C=4/3, the distance between the arm pivots and the virtual center point is R=19.9mm. The two arm pivots are placed on an arc (not shown) and the distance between them is beta=1.05 radians.  The curves were generated using a python script.
                 </p>
 
 
@@ -57,9 +64,16 @@
 
                 <p>
                     <img src="OCM/finalcrop.jpg" class="img-fluid maxImageWidth"></img><br>
-                    Close up of testing apparatus and GUI. The testing apparatus used four dial indicators, whose serial outputs were polled by a microcontroller and transmitted to a PC over a USB connection. 
-                    At each end, a pair of dial indicators measures the center position of a test cylinder (relative to a chosen reference cylinder's center position). From the pair of center positions, the relative pitch and yaw of the shaft could also be measured.
-                    The repeatability of the mount was tested by installing and uninstalling steel driveshafts of different diameters and measuring the variance in the center position. <br>
+                    Close up of testing apparatus and GUI. 
+                    At each end of the test shaft, a pair of dial indicators measures the center position of a test cylinder (relative to some reference cylinder's center position). From the pair of center positions, the relative pitch and yaw of the shaft could also be measured.
+                    The repeatability of the mount was tested by installing and uninstalling steel driveshafts of different diameters and measuring the variance in the position of the shaft.
+                    Each dial indicator was connected to a datalogger and the data collection was automated with the help of a PC GUI.
+                     <br>
+                </p>
+
+                <p>
+                    <img src="OCM/datalogger.jpg" class="img-fluid maxImageWidth"></img><br>
+                    The datalogger was built around an STM32F1 microcontroller.
                 </p>
 
                 </div>
