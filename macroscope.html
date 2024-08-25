@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <div id="header"></div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"> </script>
+    <script>
+        $("#header").load("include_head.html");
+    </script>
+    <title> Macroscope </title>
+</head>
+<body>
+    <div id="navbar"></div>
+    <div class="container-fluid my-4" style="max-width:95%">
+        <div class="row">
+            <div class="col d-none d-sm-block" style="position:fixed">
+                <div class="container-responsive">
+
+                </div>
+            </div>
+            
+            <div class = "col-8 offset-2">
+                <div class="container-fluid maxArticleWidth">
+                    <h4 id="macroscope">Macroscope</h4>
+                    <p>
+                        <img src="macroscope/macroscope1.jpg" class="img-fluid maxImageWidth"></img><br>
+                        A constant-height, contact mode atomic force microscope/profilometer. 
+                        Github repository (contains firmware and schematics) here: 
+                        <a 
+                            href="https://github.com/jarofmolasses/macroscope"> 
+                            https://github.com/jarofmolasses/macroscope 
+                        </a><br>
+
+                        <small><i>With partner: David Antoniuk</i></small>
+                    </p>
+
+                    <p>
+                        <img src="macroscope/annotatedmain.jpg" class="img-fluid maxImageWidth"></img><br>
+                        This was our final project for MECH 423, a course at UBC. 
+                        
+                        It is intended to be a simple demonstration of the atomic force microscopy principle, using a pair of linear motion stages to scan a flexible measurement probe 
+                        across a test sample. The local height of the sample deflects the probe, and the probe deflection is 
+                        measured using a load cell.
+
+                        A voice coil lifts and drops the probe, and in the future could in principle allow for a "tapping mode" 
+                        measurement where the tip oscillates allowing for less destructive tip-sample interaction.
+
+                        <br><br>
+                        In this project, I primarily handled the electronics half of the design.
+                    </p>
+
+                    <p>
+                        <img src="macroscope/probeclose.jpg" class="img-fluid maxImageWidth"></img><br>
+                        The probe is mounted as a cantilever beam on the end of the load cell. 
+                        It is cut from a sheet of brass and is tuned to give a static deflection of 50 micron per centinewton.
+                        There is a tradeoff here: a higher stiffness cantilever will ultimately give a higher spatial resolution, 
+                        but the tip-sample interaction force will be higher.
+                    
+                        <br><br>
+                        A small stack of magnets at the end of the probe allow the probe to be raised and lowered by the voice coil mounted above it.
+                    </p>
+
+                    <p>
+                        <img src="macroscope/annotatedadc.jpg" class="img-fluid maxImageWidth"></img><br>
+                        The load cell signal is received by a 24-bit ADC (ADS1256). The ADC board is mounted close to the load cell, 
+                        to limit induced noise from long load cell wiring. For simplicity, the ADC breakout board is a commercially available
+                        variant, which is modified to allow for a ratiometric measurement of the load cell voltage.
+                    </p>
+
+                    <p>
+                        <img src="macroscope/annotatedcontroller.png" class="img-fluid maxImageWidth"></img><br>
+                        The controller board hosts the rest of the electronics - the microcontroller, 
+                        the reference voltage for the ADC and load cell, and the motor drivers.
+                    </p>
+
+                    <p>
+                        <img src="macroscope/GUI.png" class="img-fluid maxImageWidth"></img><br>
+                        The system is controlled using a set of SCPI-like commands, and it can be controlled by manually writing commands in a serial terminal or by using a companion GUI.
+                        Github repository: <a href="https://github.com/JarofMolasses/macroscope_control">https://github.com/JarofMolasses/macroscope_control</a>
+                    </p>
+
+                    <p>
+                        <h4>Results</h4>
+                        <img src="macroscope/nickelTest88x88.jpg" class="img-fluid maxImageWidth"></img><br>
+                        <i>Scan of a 5c coin with 88x88 XY resolution.</i><br><br>
+
+                        <img src="macroscope/stepTest100micron.jpg" class="img-fluid maxImageWidth"></img><br>
+                        <i>Scan of a small 3d printed test sample with 0.1mm steps. The diagonal striations on the bottom step are the print lines.</i>
+
+                        <br><br>
+                        We were able to get some pretty nice scans out of this simple setup. 
+                        A conservative estimate of the minimum Z-height resolution is 0.01mm. In X and Y the resolution is limited by the radius of the tip at around 0.05mm. 
+                        
+                        <br><br>
+                        The scanning process is slow, primarily because the stepper stages need time to settle before each measurement is taken.
+                        This could be improved using smoother stepper acuation (perhaps a Trinamic driver) or using a different, "quieter" actuator (such as a voice coil).
+                        
+                    </p>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript: Above  -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"> </script> <script>$("#navbar").load("/navbar.html"); </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+</body>
+</html>
