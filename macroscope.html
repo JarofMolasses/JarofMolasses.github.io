@@ -39,7 +39,7 @@
                         
                         It is intended to be a simple demonstration of the atomic force microscopy principle, using a pair of linear motion stages to scan a flexible measurement probe 
                         across a test sample. The local height of the sample deflects the probe, and the probe deflection is 
-                        measured using a load cell.
+                        measured using a load cell. Our target resolution was a voxel size of 50 micron. 
 
                         A voice coil lifts and drops the probe, and in the future could in principle allow for a "tapping mode" 
                         measurement where the tip oscillates allowing for less destructive tip-sample interaction.
@@ -62,8 +62,10 @@
                     <p>
                         <img src="macroscope/annotatedadc.jpg" class="img-fluid maxImageWidth"></img><br>
                         The load cell signal is received by a 24-bit ADC (ADS1256). The ADC board is mounted close to the load cell, 
-                        to limit induced noise from long load cell wiring. For simplicity, the ADC breakout board is a commercially available
-                        variant, which is modified to allow for a ratiometric measurement of the load cell voltage.
+                        to limit induced noise from long load cell wiring. The ADC is on a commercially available
+                        breakout board, which is modified to allow for a ratiometric configuration of the load cell and ADC.
+                        <br><br>
+                        The ADS1256 includes a comprehensive analog front-end built in, and the noise performance is good enough for reaching our target 50 micron resolution.
                     </p>
 
                     <p>
