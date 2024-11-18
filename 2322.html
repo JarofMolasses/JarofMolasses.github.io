@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <div id="header"></div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"> </script>
+    <script>
+        $("#header").load("include_head.html");
+    </script>
+    <title> AMREL PPS-2322 </title>
+</head>
+<body>
+    <div id="navbar"></div>
+    <div class="container-fluid my-4" style="max-width:97%">
+        <div class="row">
+            <div class="col d-none d-sm-block" style="position:fixed">
+                <div class="container-responsive">
+
+                </div>
+            </div>
+            
+            <div class = "col-8 offset-2">
+                <div class="container-fluid maxArticleWidth">
+                    <h4 id="2322">PPS-2322</h4>
+                    <p>
+                        <img src="2322/2322main.jpg" class="img-fluid maxImageWidth"></img><br>
+                        Attempts to reverse engineer and improve a digital bench power supply.
+                    </p>
+
+                    <p>
+                        The 2322 is a dual channel, 30V 2A digitally controlled supply.
+                        This seems to be a 90s design. It is a pretty nice unit overall, but it came with a few issues. Some of the behaviour was so strange I thought it had to be faulty, and I was compelled to 
+                        reverse engineer the circuit to see if I could do something about it. 
+                    </p>
+
+                    <h4> The issues </h4>
+                    <h5 id="poweron">1. Power-on step response</h5>
+                    <p>
+                        <img src="2322/enable_overshoot_20V.jpg" class="img-fluid maxImageWidth"></img><br>
+                        Two distinct problems are shown in this power on/off curve. 
+                        <li>The constant current limit kicks on every startup - that's the weird linear slope region as the output capacitor charges</li>
+                        <li>There is overshoot at CC-CV transition and also when the output is disabled</li>
+                        <br>
+
+                        The former problem is not really major, and any power supply with current limiting will do this if the current is set low enough, and the 
+                        inrush current \(i_C\) into the output capacitors is enough to trip the current limiter. <br>
+                        $$ i_C = C\frac{dV}{dt}$$
+                        What's strange about this unit is that the power-on behaviour does not depend on the set current limit. No matter 
+                        the set current, the output capacitor will trip the current limit on startup at higher set voltages (as though the real current limit only kicks in after a delay... more on that later).
+                        <br><br>
+                        The latter problem is pretty serious. That is about 0.3V on the rising edge and -0.7V on the falling edge. I think something like this won't destroy anything.
+                        However, it is quite ugly, isn't it? That's not what you want from a precision power supply.
+                    </p>
+
+                    <h5 id="multistep">2. "Multi-step" output</h5>
+                    <p>
+                        <img src="2322/enable_multistep.jpg" class="img-fluid maxImageWidth"></img><br>
+                        When the supply does not switch into CC mode during power-on - i.e. when 
+                        it is allowed to turn on "normally" - it looks like it takes several intermediate steps before settling at the programmed setpoint. <br>
+                        <small><i>The setpoint in that picture is pretty high, but this was done with some of the output capacitance removed so the inrush current was much lower and the limiter wouldn't trip</i></small>
+                    </p>
+
+                    <h5 id="CC">3. Slow CC response </h5>
+                    <p>
+                        <img src="2322/CC overshoot.jpg" class="img-fluid maxImageWidth"></img><br>
+                        Here's the voltage over a 47 ohm resistor with the output set to 8V and 10mA. The voltage rises to 8V before the current limit kicks in, 
+                        in other words a peak 170mA is drawn. Order of magnitude overshoot.
+                        The CC loop bandwidth is too low. Though a bench supply is not the best option for a precision low current source (especially not this one, the CC mode noise is 
+                        only specified as 1mArms), this ought to be improved a bit. <br>
+                    </p>
+
+                    <h4 id="Reverse engineering"> Reverse engineering </h4>
+                    I could not find schematics for this unit, though I could find some for an AMREL LPS-305, which has a similar output stage and control loop. Time to reverse engineer.
+                    <p>
+                        <img src="2322/2322internal.jpg" class="img-fluid maxImageWidth"></img><br>
+                        The main functional components of the unit are the mainboard, the power supply board, and the digital card.
+                    </p>
+                    <p>
+                        <img src="2322/Front.jpg" class="img-fluid maxImageWidth"></img><br>
+                        The interesting parts are here, on the mainboard. The digital card connects to the 8-bit ISA connector (Channel 1 signals) and the IDC connector in the bottom left (Channel 2 signals).
+                        The digital card uses an 8051 at its core, or more specifically a 80C31 clone. It might be worthwhile to make a replacement with a modern microcontroller.
+                        The communication between the card and each channel is done through photocouplers, and each channel is completely separate on the mainboard. 
+                    </p>
+
+                    <p>
+                        <img src="2322/reverse.jpg" class="img-fluid maxImageWidth"></img><br>
+                        Here I draw all the visible traces (front copper in red, back copper in blue) over a picture of the board to make it a little easier to see the connections at a glance. For now, it 
+                        should suffice to just trace out Channel 1. 
+                    </p>
+
+                    <h5>DAC sample and hold</h5>
+                    <p>
+                        <img src="2322/DAC.png" class="img-fluid maxImageWidth"></img><br>
+                        <img src="2322/sampleandhold.png" class="img-fluid maxImageWidth"></img><br>
+                        We start with an AD7541 12-bit DAC and 4066 CMOS switch in a sample-and-hold configuration. We're mainly interested in two outputs:
+                        <li>CVP (voltage setpoint)</li>
+                        <li>CCP (current setpoint)</li>
+                    </p>
+
+                    <h5>Controllers</h5>
+                    <p>
+                        <img src="2322/control.png" class="img-fluid maxImageWidth"></img><br>
+                        A typical diode-OR CV/CC control sharing scheme. The top branch is the current controller, a simple Type 1 compensator. The bottom branch is the voltage controller, with a 
+                        sort of Type 2 compensator. 
+                    </p>
+
+                    <h5>Output stage</h5>
+                    <p>
+                        <img src="2322/outputstage.png" class="img-fluid maxImageWidth"></img><br> 
+                        An interesting version of the "floating regulator". The unregulated input 60VDC has no shared ground with the rest of the circuit. Circuit ground is at the 
+                        emitter of the series pass transistors. This is nearly identical to the LPS-305 negative rail. 
+                    </p>
+
+                    <h5>Measurement</h5>
+                    <p>
+                        <img src="2322/SAR.png" class="img-fluid maxImageWidth"></img><br> 
+                        Readback is done using a discrete SAR. The DAC output is periodically used to generate reference voltages for the measurement comparators.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript: Above  -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"> </script> <script>$("#navbar").load("/navbar.html"); </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+</body>
+</html>
