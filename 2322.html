@@ -203,8 +203,9 @@
 
                         The reason the CC loop is so slow is because it lacks a P term, and the controller only responds to the time integral of the current error. It's also quite bad at 
                         rejecting power supply ripple. 
-                        I suppose the reason for using a pure I-controller here is so that it has a very subdued response and the CV loop can dominate. Usually, CV mode is the normal operating condition for a lab power supply, so 
-                        voltage control usually gets priority over current control. Still, it may be good to push the CC loop crossover frequency up and speed it up a bit.
+                        I suppose the reason for using a pure I-controller here is so that it has a very subdued response and the CV loop can dominate. Usually, CV mode is the normal 
+                        operating condition for a lab power supply, so it's reasonable that voltage control gets priority over current control. 
+                        Still, it may be good to push the CC loop crossover frequency up to try to suppress the current overshoot a bit.
                     </p>
 
                     <h6><b>Voltage controller</b></h6>
