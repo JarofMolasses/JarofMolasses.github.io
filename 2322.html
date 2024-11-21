@@ -14,30 +14,38 @@
         <div class="row">
             <div class="col d-none d-sm-block" style="position:fixed">
                 <div class="container-responsive">
-
+                    <li><a href="#2322">Top</a></li>
+                    <li><a href="#poweron"> Issue 1. Power-on step response</a></li>
+                    <li><a href="#multistep">Issue 2. "Multi-step" output</a></li>
+                    <li><a href="#CC">Issue 3. Slow CC response</a></li>
                 </div>
             </div>
             
             <div class = "col-8 offset-2">
                 <div class="container-fluid maxArticleWidth">
-                    <h4 id="2322">PPS-2322</h4>
+                    <h4 id="2322">AMREL PPS-2322 power supply</h4>
                     <p>
                         <img src="2322/2322main.jpg" class="img-fluid maxImageWidth"></img><br>
-                        Attempts to reverse engineer and improve a digital bench power supply.
+                        Attempts to reverse engineer a digital bench power supply and improve its performance.
                     </p>
 
                     <p>
-                        The 2322 is a dual channel, 30V 2A digitally controlled supply.
-                        This seems to be a 90s design. It is a pretty nice unit overall, but it came with a few issues. Some of the behaviour was so strange I thought it had to be faulty, and I was compelled to 
+                        The 2322 is a dual channel, 30V 2A programmable supply. 
+                        It is a nice unit overall, and I really do like this sort of multi-channel remote control programmable linear power supply. They're also really expensive most of the time.
+                        <br><br>
+                        This one came with a few inexcusable issues, in my opinion. 
+                        Some of the behaviour was so strange I thought it was faulty, and I felt compelled to 
                         reverse engineer the circuit to see if I could do something about it. 
+                        <br><br>
+                        <small>Spoiler: I'm pretty sure now that it was just designed that way.</small>
                     </p>
 
                     <h4> The issues </h4>
-                    <h5 id="poweron">1. Power-on step response</h5>
+                    <h5 id="poweron">Issue 1. Power-on step response</h5>
                     <p>
                         <img src="2322/enable_overshoot_20V.jpg" class="img-fluid maxImageWidth"></img><br>
                         Two distinct problems are shown in this power on/off curve. 
-                        <li>The constant current limit kicks on every startup - that's the weird linear slope region as the output capacitor charges</li>
+                        <li>The constant current limit kicks on every startup - that's the weird linear slope as the output capacitor charges</li>
                         <li>There is overshoot at CC-CV transition and also when the output is disabled</li>
                         <br>
 
@@ -51,7 +59,7 @@
                         However, it is quite ugly, isn't it? That's not what you want from a precision power supply.
                     </p>
 
-                    <h5 id="multistep">2. "Multi-step" output</h5>
+                    <h5 id="multistep">Issue 2. "Multi-step" output</h5>
                     <p>
                         <img src="2322/enable_multistep.jpg" class="img-fluid maxImageWidth"></img><br>
                         When the supply does not switch into CC mode during power-on - i.e. when 
@@ -59,7 +67,7 @@
                         <small><i>The setpoint in that picture is pretty high, but this was done with some of the output capacitance removed so the inrush current was much lower and the limiter wouldn't trip</i></small>
                     </p>
 
-                    <h5 id="CC">3. Slow CC response </h5>
+                    <h5 id="CC">Issue 3. Slow CC response </h5>
                     <p>
                         <img src="2322/CC overshoot.jpg" class="img-fluid maxImageWidth"></img><br>
                         Here's the voltage over a 47 ohm resistor with the output set to 8V and 10mA. The voltage rises to 8V before the current limit kicks in, 
@@ -68,8 +76,10 @@
                         only specified as 1mArms), this ought to be improved a bit. <br>
                     </p>
 
-                    <h4 id="Reverse engineering"> Reverse engineering </h4>
-                    I could not find schematics for this unit, though I could find some for an AMREL LPS-305, which has a similar output stage and control loop. Time to reverse engineer.
+                    <h4 id="Reverse engineering"> Reverse engineering and modifications </h4>
+                    I could not find any schematics for this unit, though I could find a service manual with schematics for an AMREL LPS-305 which has a similar output stage and control loop 
+                    and provided a good starting point to try reverse engineering this thing. 
+                    <a href="https://elektrotanya.com/sites/default/files/forum/2018/07/lps301_305_service_manual_1803.pdf">This is an *exceptionally bad* service manual, by the way.</a>
                     <p>
                         <img src="2322/2322internal.jpg" class="img-fluid maxImageWidth"></img><br>
                         The main functional components of the unit are the mainboard, the power supply board, and the digital card.
@@ -83,38 +93,142 @@
 
                     <p>
                         <img src="2322/reverse.jpg" class="img-fluid maxImageWidth"></img><br>
-                        Here I draw all the visible traces (front copper in red, back copper in blue) over a picture of the board to make it a little easier to see the connections at a glance. For now, it 
-                        should suffice to just trace out Channel 1. 
-                    </p>
+                        Here I draw all the visible traces (front copper in red, back copper in blue) over a picture of the board to make it a little easier to see the connections at a glance. 
+                        For now, I've only reverse engineered Channel 1, though Channel 2 should be more of the same. 
 
-                    <h5>DAC sample and hold</h5>
+                    <h5 id="DAC">DAC sample and hold</h5>
                     <p>
                         <img src="2322/DAC.png" class="img-fluid maxImageWidth"></img><br>
                         <img src="2322/sampleandhold.png" class="img-fluid maxImageWidth"></img><br>
-                        We start with an AD7541 12-bit DAC and 4066 CMOS switch in a sample-and-hold configuration. We're mainly interested in two outputs:
-                        <li>CVP (voltage setpoint)</li>
-                        <li>CCP (current setpoint)</li>
+                        The reference voltages for the controllers are generated by an AD7541 12-bit DAC and 4066 CMOS switch in a sample-and-hold configuration. The signal is held by 2x470nF capacitors with a 1k in series, then buffered. 
+                        The DAC is also used to generate voltages for a software SAR ADC used to read back the voltage and current.
+                        <br><br>
+                        It is here where the power-on CC/CV and multi-step issues occur.
                     </p>
 
-                    <h5>Controllers</h5>
+                    <h6><b>Multistep waveforms and sequencing problem</b></h6>
                     <p>
-                        <img src="2322/control.png" class="img-fluid maxImageWidth"></img><br>
-                        A typical diode-OR CV/CC control sharing scheme. The top branch is the current controller, a simple Type 1 compensator. The bottom branch is the voltage controller, with a 
-                        sort of Type 2 compensator. 
+                        <img src="2322/sample and hold demo.jpg" class="img-fluid maxImageWidth"></img><br>
+                        Here we see the current programming and voltage programming waveforms at the output of the 4066. The two waveforms above show the CVP_PULSE signal and the CVP_SWITCH signal, 
+                        and the other pair are the CCP_PULSE and CCP_SWITCH signals. From this it's clear that the time constant of the RC network in the sample and hold is too long 
+                        for the programming pulse duration, and it takes a couple cycles to get to the programmed level, on both rise and fall. This is what causes the "multistep" power-on/off waveform.
+                        <br><br>
+                        <img src="2322/sample and hold bad spice.png" class="img-fluid maxImageWidth"></img><br>
+                        In SPICE, we can confirm this is expected behaviour based on the selected R, C and programming pulse duration. 
+                        Unless I'm missing something, this just looks like a design error.
+
+                        <br><br>
+                        A more subtle issue we can see here is the sequencing of the CVP and CCP signals. Notice that the CVP signal is always enabled before the CCP signal, which causes the current
+                        limit to kick in on every startup regardless of the programmed current. 
+                        <img src="2322/voltage then current.jpg" class="img-fluid maxImageWidth"></img><br>
+                        <small><i>Waveforms, top to bottom: 1. DAC output, 2. CCP_SWITCH, 3. CVP_SWITCH, 4. Output</i></small>
+                        <ol>
+                            <li>At idle, both CVP and CCP are set for 0V and 0A. </li>
+                            <li>When the output enable is switched on, the CVP level is programmed first, the output voltage begins to rise and current begins to flow through shunt resistor R161 to charge the output capacitor. The supply mode is CV.
+                            </li>
+                            <li>At this stage CCP is still set for 0A. It will still allow a small current to flow, due to some combination of calibration error and input offset voltage.
+                                The current loop responds to the inrush current, but because it is still set for 0A, it instantly goes into current limit. The supply mode is now CC </li>
+                            <li>The CCP level is usually programmed one cycle after the CVP level. This releases the current limit and the supply returns to CV mode, where we can see the CC-CV mode overshoot.</li>
+                        </ol>
+                        
                     </p>
 
-                    <h5>Output stage</h5>
+                    <h6><b>Multi-step fix</b></h6>
+                    </p>
+                        The "multi-step" waveform is an easy fix, we just need the minimum CVP_SWITCH or CCP_SWITCH pulse duration to be much larger than the RC time constant, ~5x is usually considered enough. 
+                        The programming pulse lengths are not consistent, but the shortest ones are around 2ms.
+                        $$t_{switch} > 5R_{total}C$$
+                        $$R_{total}C < t_{switch,min}/5 \rightarrow R_{total}C < 0.4\mathrm{ms} $$
+
+                        With the default parameters \(R=1\mathrm{k}, C=940\mathrm{nF}\), and assuming a maximum switch resistance of 160ohm, $$R_{total}C = (1.160\mathrm{k})(940\mathrm{nF}) = 1.1\mathrm{ms}.$$
+                        My recommendation is to replace the 1k with a smaller R=220, which gives $$R_{total}C = (380)(940\mathrm{nF}) = 0.36\mathrm{ms}.$$
+                    </p>
+                    <h6><b>CV/CC programming sequence fix</b></h6>
+                    <p>
+                        As for the sequencing issue, it's a relatively minor problem. More of an annoyance than anything. It's also quite a difficult one to fix, as it's entirely a firmware issue. 
+                        The original ROM chip is a 27C512 UVEPROM, and I replaced it with a W27C512 EEPROM. <br><br>
+                        You could dive into the 8051 assembly to reverse the order in the original firmware, or, you can find new firmware for a rebranded, later version of this unit:
+                        <a href=https://www.eevblog.com/forum/testgear/motech-amrel-pps-1002-diagramschematic/msg3605273/#msg3605273> link to EEVBLOG forums</a>. 
+
+                        Though the boards in that Motech 1204 look completely different, and it uses a different ROM chip, it seems like the fundamental design is the same. This new firmware switches the CV and CC programming sequence. 
+                        <br><br>
+                        There are a few caveats, of course.
+                        If the new firmware is loaded, the supply's calibration will be invalidated because the EEPROM addressing is not consistent between versions, and the internal calbration calculations are done differently. 
+                        I also suspect the GPIB functionality may be broken with the new firmware, but I haven't checked this since I don't have any GPIB controllers. (I normally just use the RS-232, which this unit lacks).
+                    </p>
+
+                    <h5 id="output">Output stage</h5>
                     <p>
                         <img src="2322/outputstage.png" class="img-fluid maxImageWidth"></img><br> 
-                        An interesting version of the "floating regulator". The unregulated input 60VDC has no shared ground with the rest of the circuit. Circuit ground is at the 
-                        emitter of the series pass transistors. This is nearly identical to the LPS-305 negative rail. 
+                        A "floating regulator" type output stage. The unregulated input 60VDC has no shared ground with the rest of the circuit. Circuit ground is at the 
+                        emitter of the series pass transistors (RMI = GND), while signal ground is at the output positive rail (+OUT = SGND). This circuit is nearly identical to that of the LPS-305 negative rail. 
                     </p>
 
-                    <h5>Measurement</h5>
+                    <h5 id="measure">Measurement</h5>
                     <p>
                         <img src="2322/SAR.png" class="img-fluid maxImageWidth"></img><br> 
-                        Readback is done using a discrete SAR. The DAC output is periodically used to generate reference voltages for the measurement comparators.
+                        Readback is done using a software SAR ADC running on the microcontroller.
+                        The DAC output is periodically used to generate reference voltages for the measurement comparators.
+                    </p>                    
+                    
+                    <h5 id="control">Controllers</h5>
+                    <p>
+                        <img src="2322/control.png" class="img-fluid maxImageWidth"></img><br>
+                        A typical diode-OR CV/CC control sharing scheme. The top branch is a pure integrator which handles current control. The bottom branch
+                        is a filtered PID controller for voltage control.
+                        <br><br>
+                        <img src="2322/output closeup.png" class="img-fluid maxImageWidth"></img><br>
+                        The output sense nodes:
+                        <li>The input to shunt resistor \(R_{s}\) is node RMI (high side), and the output is node RMO (low side). </li>
+                        <li>The global circuit ground is at RMI, and the signal ground (for the controller setpoint signals) is at RMO. </li>
+                        <li>Voltage feedback S+ and S- are normally externally strapped to the +OUT and -OUT output terminals, respectively. RMO is also directly connected to +OUT.</li>
                     </p>
+
+                    <h6><b>Current controller</b></h6>
+                    <p>
+                        The output current through \(R_{s}\) is sensed by measuring voltage at RMO, where $$-V_{RMO} = I_{out}R_S = I_{out}/10.$$
+                        <img src="2322/CC controller.png" class="img-fluid maxImageWidth"></img><br>
+                        The current control is done by U33A, which compares current programming signal CCP to RMO. U32B converts CCP from signal ground reference to circuit ground reference, and inverts it.
+                        R61 and R69 attenuate CCP by 50, and with a maximum DAC output voltage of 10V, the maximum programmable CCP signal is 200mV and the maximum programmable current is 2A. 
+                        Ultimately, the controller setpoint can be expressed as
+                        $$V_{Iset} = R_sI_{set} \text{ where } I_{set} = -CCP/5$$
+                        The measured error signal is
+                        $$e = V_{RMO}-V_{Iset} = R_s(-I_{out}-I_{set})$$
+
+                        U33A is used as a pure integrator with R1 (R68 in the schematic) and C1 (C40). Anti-windup diodes D14, D13, D12 prevent the error accumulation from getting out of hand.
+                        The transfer function of the current controller can be written as 
+                        $$\frac{V_{i}}{e}(s) = \frac{-1}{sR_1 C_1}, $$
+
+                        and the crossover frequency is given by $$f_{i} = \frac{1}{2\pi R_1 C_1} = 10.61\mathrm{kHz} .$$
+
+                        The reason the CC loop is so slow is because it lacks a P term, and the controller only responds to the time integral of the current error. It's also quite bad at 
+                        rejecting power supply ripple. 
+                        I suppose the reason for using a pure I-controller here is so that it has a very subdued response and the CV loop can dominate. Usually, CV mode is the normal operating condition for a lab power supply, so 
+                        voltage control usually gets priority over current control. Still, it may be good to push the CC loop crossover frequency up and speed it up a bit.
+                    </p>
+
+                    <h6><b>Voltage controller</b></h6>
+                    <p>
+                        <img src="2322/CV controller.png" class="img-fluid maxImageWidth"></img><br>
+                        The voltage controller at U33B is sort of shaped like a Type-3 compensator, and is in effect a filtered derivative PID controller. 
+                        The controller's setpoint is fixed at signal ground, i.e.:
+                        $$V_{Vset} = V_{S+}.$$
+
+                        The "actual" setpoint which controls the output voltage is the CVP signal, fed in at a summing junction at the inverting input of U33B. Thus, we have error signal given by
+                        $$e=3.57CVP + V_{S-} - V_{V_Vset}$$
+
+                        For this AC analysis of the controller, we can choose arbritrary DC values \(V_{S+}=CVP=0\mathrm{V}\), so that
+                        $$e=V_{S-}$$ 
+
+                        U33B has a local feedback network formed by R1 (R84), C1 (C48), R2 (R80), Rd (R81), Cd (C52). R73 does not affect the controller frequency response. 
+                        The transfer function for the voltage controller can be written as 
+                        $$\frac{V_{v}}{e}(s) = -\frac{R_1}{R_2+R_d}\frac{(\omega_{z1}/s + 1)(s/\omega_{z2} + 1)}{(1 + 1/\omega_{p}s)},$$
+                        where the pole and zero frequencies can be found as:
+                        $$\omega_{z1} = \frac{1}{C_1R_1} \rightarrow f_{z1} = 7.8\mathrm{kHz},$$
+                        $$\omega_{z2} = \frac{1}{C_dR_d} \rightarrow f_{z2} = 445\mathrm{kHz},$$
+                        $$\omega_{p} = \frac{1}{C_d (R_2//R_d)} \rightarrow f_{p} = 16\mathrm{kHz}.$$
+                    </p>
+
                 </div>
             </div>
         </div>

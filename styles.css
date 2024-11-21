@@ -1,14 +1,14 @@
 .maxArticleWidth {
-    max-width:800px;
+    max-width:1000px;
 }
 /* Limit images to this percentage of the max article width
 I think images would only ever be smaller than the text section*/
 .maxImageWidth {
-    max-width:90%
+    max-width:100%
 }
 
 .maxImageHeight {
-    max-height:500px;
+    max-height:700px;
 }
 
 .fancytitle {
