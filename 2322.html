@@ -69,13 +69,13 @@
                         Here's the voltage over a 47 ohm resistor with the output set to 8V and 10mA. The voltage rises to 8V before the current limit kicks in, 
                         in other words a peak 170mA is drawn. It takes around 20ms for the controller to bring the current back down.
                         Though a bench supply is not the best option for a precision low current source (especially not this one, the CC mode noise is 
-                        only specified as 1mArms), this ought to be improved a bit. <br>
+                        only specified as 1mArms), I would improve this if possible. <br>
                     </p>
 
                     <h4 id="Reverse engineering"> Reverse engineering and modifications </h4>
                     I could not find any schematics for this unit, though I could find a service manual with schematics for an AMREL LPS-305 which has a similar output stage and control loop 
-                    and provided a good starting point to try reverse engineering this thing. 
-                    <a href="https://elektrotanya.com/sites/default/files/forum/2018/07/lps301_305_service_manual_1803.pdf">This is an *exceptionally bad* service manual, by the way.</a>
+                    and provided a good starting point to try reverse engineering. 
+                    <a href="https://elektrotanya.com/sites/default/files/forum/2018/07/lps301_305_service_manual_1803.pdf">This is an *exceptionally bad* service manual.</a>
                     <p>
                         <img src="2322/2322internal.jpg" class="img-fluid maxImageWidth"></img><br>
                         The main functional components of the unit are the mainboard, the power supply board, and the digital card.
@@ -150,7 +150,7 @@
                         <small><i>LTspice frequency sweeps. Top to bottom: 1. open loop gain \(C(s)P(s) = I_{out}/e \) ,  2. plant gain \(P(s)=I_{out}/V_{i}\) , 3. controller gain \(C(s)=V_{i}/e\)</i></small>
                         <br><br>
 
-                        The open loop system crossover frequency for the CC mode is at 5.2kHz and the phase margin is around 54 degrees. <br><br>
+                        The open loop system crossover frequency for the CC mode is at 6.2kHz and the phase margin is around 75 degrees. <br><br>
                         
                         The CC controller isn't very good, and part of the reason it is slow may be because it is missing a proportional action. It's also quite bad at rejecting power supply ripple. 
                         I suppose the reason for using a pure I-controller here is so that it has a very subdued response and the CV loop can dominate. Usually, CV mode is the normal 
@@ -184,7 +184,7 @@
                         With the output set to 30V and a 10k load, the phase margin is around 74 degrees, and the system crossover frequency is 4.6kHz. 
                     </p>
 
-                    <h5 id="fix">Possible fixes: power-on issues</h5>
+                    <h4 id="fix">Possible fixes: power-on issues</h5>
                     <h6><b>Multistep waveforms and sequencing problem</b></h6>
                     <p>
                         <img src="2322/sample and hold demo.jpg" class="img-fluid maxImageWidth"></img><br>
@@ -236,7 +236,7 @@
                         I also suspect the GPIB functionality may be broken with the new firmware, but I haven't checked this since I don't have any GPIB controllers. (I normally just use the RS-232, which this unit lacks).
                     </p>
                     
-                    <h5>Possible fixes: loop compensation</h5>
+                    <h4>Possible fixes: loop compensation</h5>
                     <h6><b>Voltage loop</b></h6>
                     <p>
                         <img src="2322/simulated overshoots.png" class="img-fluid maxImageWidth"></img><br>
@@ -260,7 +260,7 @@
                         The phase margin is around 64 degrees in this case.<br><br>
                         Using C48 = 200pF results in a larger overshoot (100mV CC-CV overshoot and -20mV negative overshoot), but it yields a very good >80 degrees phase margin due to better compensation of the plant characteristics.
                         <br><br>
-                        Anything between 100pF - 1nF for C48 results in markedly better performance than stock without getting close to instability. In real tests, it also happens to reduce the output voltage noise quite substantially, probably due to the higher bandwidth.
+                        Anything between 100pF - 1nF for C48 results in markedly better performance than stock without getting too close to instability. In real tests, it also happens to reduce the output voltage noise quite substantially, possibly due better PSRR with higher bandwidth.
                         Of course, going deeper into the loop shaping is also an option here, but replacing C48 alone seems good enough to solve most issues with a minimum modification.
                        
                     </p>
@@ -268,18 +268,53 @@
                     <p>
                         <img src="2322/simulated current overshoot.png" class="img-fluid maxImageWidth"></img><br>
                         Like with the real test, here we set up the LTspice model to deliver ~8V/10mA into a 47R load.
-                        The simulation seems to show the slow CC regulation is expected. For the current loop, I like to at least have a 20mA-capable current limit, this is good enough to protect most things. <br><br>
+                        The simulation seems to show the slow CC regulation is expected.<br><br>
                         <img src="2322/CC controller.png" class="img-fluid maxImageWidth"></img><br>
-                        In the current controller, changing C40 from 15nF to 1nF is enough to suppress the overshoot to below 20mA with any set voltage. At least, with a moderate 47R load, on power-on.
+                        In the current controller, changing C40 from 15nF to 1nF is enough to suppress the overshoot to below 20mA with any set voltage. 
                         <br><br>
                         <img src="2322/current overshoot 1nF.png" class="img-fluid maxImageWidth"></img><br>
                         Again, the load is a 47R resistor, and the current limit is set to 10mA. 
-                        Increasing the set voltage to the theoretical maximum 35V results in just under 13mA peak current, and this is probably acceptable current limiting performance. 
-                        Lower load resistances will certainly see a larger overshoot, as will transient loads while the output is enabled. With this controller design, this is simply not meant to be a fast CC power supply.
+                        Increasing the set voltage to the theoretical maximum 35V results in just under 13mA peak current, and this is probably acceptable current limiting performance.
                         <br><br>
 
                         <img src="2322/all CC frd 1n.png" class="img-fluid maxImageWidth"></img><br>    
-                        Looking at the frequency response, the phase margin of the CC system is now around 74 degrees with C40 = 1nF. This is good.
+                        However, looking at the frequency response, the phase margin of the CC system is now around 47 degrees and the crossover frequency is 45kHz. 
+                        This is getting a bit too close to potential instability for my taste. 
+                        <br><br>
+                        We also typically want the gain crossover slope to be -20dB/decade for stability.
+                        If we want to keep the output stage unchanged, that seems to be with a crossover frequency around 5kHz, which means we don't really have room to increase this bandwidth from the stock configuration and maintain good stability.
+                        To increase the current controller bandwidth and kill the overshoot, it would really be better to introduce a lead compensator - i.e., make the CC controller a proper PID controller. 
+                        Maybe later...
+                    </p>
+                
+                    <h4>Detour: output noise</h4>
+                    <p>
+                        <b>"Oh, just one more thing..."</b><br>
+                        <img src="2322/noise.jpg" class="img-fluid maxImageWidth"></img><br>
+                        After putting everything back together, this was the output noise at the front output terminals. 
+                        I don't remember seeing any of that when the supply was open. (Was it always like that with the case closed...?)<br><br>
+
+                        <img src="2322/output terminal.png" class="img-fluid maxImageWidth"></img><br>
+                        At any rate, this was somehow related to the common mode filtering caps C73 and C74. 
+                       <br><br>
+                        
+                        <img src="2322/no noise.jpg" class="img-fluid maxImageWidth"></img><br>
+                        Removing them completely fixed the noise. I've looked at a few power supply schematics with the same Harrison "floating regulator" topology that omit such output capacitors, so I am relatively confident this won't be a huge issue.
+                        The chassis ground is intact, and the ground terminals are all still usable.
+                        Though in principle, I actually can't explain this. Common mode filtering probably shouldn't do <i>that</i> to the differential mode noise that we measure at the output... <br><br>
+                    </p>
+                    
+                    <h4>Results</h4>
+                    <p>
+                        <img src="2322/multistep fixed.jpg" class="img-fluid maxImageWidth"></img><br>
+                        With a set 12V and 1A, the power-on is a clean step. No overshoot on the power-off.<br><br>
+
+                        <img src="2322/overshoot fixed.jpg" class="img-fluid maxImageWidth"></img><br>
+                        With a set 12V and 0.050A, the output caps trigger the current limit during the startup, as expected. 
+                        But this time, very little overshoot on the mode crossover. Much better.
+
+                        <br><br>
+                        At some point I will have to test the real stability with different loads, transient response time, etc. But we will leave it at that for now.
                     </p>
                 </div>
             </div>
