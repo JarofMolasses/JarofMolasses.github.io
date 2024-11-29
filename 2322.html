@@ -27,7 +27,7 @@
 
                     <p>
                         The 2322 is a dual channel, 30V 2A programmable supply. 
-                        It is a nice unit overall, and I really do like this sort of multi-channel remote control programmable linear power supply. They're also really expensive most of the time.
+                        I really do like this sort of multi-channel remote control programmable linear power supply, they're not easy to find so it's worth hanging on to them. They're also really expensive most of the time.
                         <br><br>
                         This one came with a few inexcusable issues, in my opinion. 
                         Some of the behaviour was so strange I thought it was faulty, and I felt compelled to 
@@ -52,14 +52,14 @@
                         the set current, the output capacitor will trip the current limit on startup at higher set voltages (as though the real current limit only kicks in after a delay... more on that later).
                         <br><br>
                         The latter problem is pretty serious. That is about 0.3V on the rising edge and -0.7V on the falling edge. I think something like this won't destroy anything.
-                        However, it is quite ugly, isn't it? That's not what you want from a precision power supply.
+                        Still, I hate it. I don't consider that negligible overshoot.
                     </p>
 
                     <h5 id="multistep">Issue 2. "Multi-step" output</h5>
                     <p>
                         <img src="2322/enable_multistep.jpg" class="img-fluid maxImageWidth"></img><br>
                         When the supply does not switch into CC mode during power-on - i.e. when 
-                        it is allowed to turn on "normally" - it looks like it takes several intermediate steps before settling at the programmed setpoint. <br>
+                        it is allowed to turn on "normally" in CV mode - it looks like it takes several intermediate steps before settling at the programmed setpoint. This is also minor, but also quite ugly. <br>
                         <small><i>The setpoint in that picture is pretty high, but this was done with some of the output capacitance removed so the inrush current was much lower and the limiter wouldn't trip</i></small>
                     </p>
 
@@ -73,9 +73,10 @@
                     </p>
 
                     <h4 id="Reverse engineering"> Reverse engineering and modifications </h4>
-                    I could not find any schematics for this unit, though I could find a service manual with schematics for an AMREL LPS-305 which has a similar output stage and control loop 
+                    I could not find any schematics for this unit, though I could find a service manual with schematics for an 
+                    <a href="https://elektrotanya.com/sites/default/files/forum/2018/07/lps301_305_service_manual_1803.pdf">AMREL LPS-305</a> which happens to have a similar output stage and control loop 
                     and provided a good starting point to try reverse engineering. 
-                    <a href="https://elektrotanya.com/sites/default/files/forum/2018/07/lps301_305_service_manual_1803.pdf">This is an *exceptionally bad* service manual.</a>
+                    
                     <p>
                         <img src="2322/2322internal.jpg" class="img-fluid maxImageWidth"></img><br>
                         The main functional components of the unit are the mainboard, the power supply board, and the digital card.
@@ -114,6 +115,8 @@
                         <img src="2322/SAR.png" class="img-fluid maxImageWidth"></img><br> 
                         Readback is done using a software SAR ADC running on the microcontroller.
                         The DAC output is periodically used to generate reference voltages for the measurement comparators.
+
+                        Also shown is U35A, which handles the overvoltage protection. OVP is a fast analog cutoff, while OCP is handled in software and is much slower to respond.
                     </p>                    
                     
                     <h5 id="control">Controllers</h5>
@@ -219,21 +222,26 @@
                         $$t_{switch} > 5R_{total}C$$
                         $$R_{total}C < t_{switch,min}/5 \rightarrow R_{total}C < 0.4\mathrm{ms} $$
 
-                        With the default parameters \(R=1\mathrm{k}, C=940\mathrm{nF}\), and assuming a maximum switch resistance of 160ohm, $$R_{total}C = (1.160\mathrm{k})(940\mathrm{nF}) = 1.1\mathrm{ms}.$$
+                        With the default parameters \(R=1\mathrm{k}, C=940\mathrm{nF}\), and assuming a maximum switch resistance of 160\(\Omega\), $$R_{total}C = (1.160\mathrm{k})(940\mathrm{nF}) = 1.1\mathrm{ms}.$$
                         My recommendation is to replace the 1k with a smaller R=220, which gives $$R_{total}C = (380)(940\mathrm{nF}) = 0.36\mathrm{ms}.$$
                     </p>
                     <h6><b>CV/CC programming sequence fix</b></h6>
                     <p>
                         As for the sequencing issue, it's a relatively minor problem. More of an annoyance than anything. It's also quite a difficult one to fix, as it's entirely a firmware issue. 
                         The original ROM chip is a 27C512 UVEPROM, and I replaced it with a W27C512 EEPROM. <br><br>
-                        You could dive into the 8051 assembly to reverse the order in the original firmware, or, you can find new firmware for a rebranded, later version of this unit:
-                        <a href=https://www.eevblog.com/forum/testgear/motech-amrel-pps-1002-diagramschematic/msg3605273/#msg3605273> link to EEVBLOG forums</a>. 
+                        You could dive into the 8051 assembly to reverse the order in the original firmware, which is doable but until I do a full reverse engineering of the firmware, I don't trust that so much. 
+                        Very fortunately, you can find new firmware for a rebranded, later version of this unit:
+                        <a href=https://www.eevblog.com/forum/testgear/motech-amrel-pps-1002-diagramschematic/msg3605273/#msg3605273> the Motech 1204</a>. 
 
-                        Though the boards in that Motech 1204 look completely different, and it uses a different ROM chip, it seems like the fundamental design is the same. This new firmware switches the CV and CC programming sequence. 
+                        Though the boards in that one look completely different, and it uses a different ROM chip, it seems like the fundamental design is the same. This new firmware switches the CV and CC programming sequence. 
                         <br><br>
                         There are a few caveats, of course.
-                        If the new firmware is loaded, the supply's calibration will be invalidated because the EEPROM addressing is not consistent between versions, and the internal calbration calculations are done differently. 
-                        I also suspect the GPIB functionality may be broken with the new firmware, but I haven't checked this since I don't have any GPIB controllers. (I normally just use the RS-232, which this unit lacks).
+                        If the new firmware is loaded, the supply's calibration will be invalidated because the EEPROM addressing is not consistent between versions, and the internal calibration calculations are done differently. 
+                        <br><br>
+                        More importantly, <b>the OVP setpoint is no longer accurate.</b> The new firmware expects a smaller ratio on the sense divider, and as a result the actual voltage limit is about 40% higher than the programmed limit. 
+                        That might still be usable, because it's a consistent behaviour. The fix for this, if desired, is simple -  <b>replacing R79 and R45 (9k1) with 13.3k should restore normal OVP function</b>. That would probably
+                        be considerably less effort than reverse engineering the new firmware and changing the ratio in software.
+                        I also suspect the GPIB functionality may be broken with the new firmware, but I haven't checked this since I don't have any GPIB controllers. 
                     </p>
                     
                     <h4>Possible fixes: loop compensation</h5>
@@ -260,8 +268,18 @@
                         The phase margin is around 64 degrees in this case.<br><br>
                         Using C48 = 200pF results in a larger overshoot (100mV CC-CV overshoot and -20mV negative overshoot), but it yields a very good >80 degrees phase margin due to better compensation of the plant characteristics.
                         <br><br>
-                        Anything between 100pF - 1nF for C48 results in markedly better performance than stock without getting too close to instability. In real tests, it also happens to reduce the output voltage noise quite substantially, possibly due better PSRR with higher bandwidth.
-                        Of course, going deeper into the loop shaping is also an option here, but replacing C48 alone seems good enough to solve most issues with a minimum modification.
+                        Anything between 100pF - 1nF for C48 results in markedly better performance than stock due to higher bandwidth while maintaining positive phase and gain margin. 
+                        Phase and gain margin are not bulletproof stability tests, however, and it is usually useful to also look at the output impedance of the power supply. As the bandwidth increases, the interaction between the effective
+                        supply output inductance and the output capacitors form an LC resonator which limits the stability. Specifically, the phase of the output impedance approaches or exceeds 90 degrees. So it appears
+                        there may have been a deliberate tradeoff between transient response and the output impedance behaviour, where absolute stability was achieved at the expense of overshoot. 
+                        I would prefer the opposite for a general purpose lab supply.
+                        As long as the supply does not oscillate, some ringing with difficult inductive loads is reasonable. Nearly a volt of overshoot on power-on and off is not. <br><br>
+
+                        Of course, going deeper into the loop shaping is also an option here, but replacing C48 alone seems good enough to solve most issues with a minimum modification. Something like C48 = 320p maintains 
+                        positive phase and gain margins, does not let the output impedance phase exceed 90 degrees, and fixes the transient response. 
+                        Though the output impedance still indicates stability, it has much smaller margins than the stock configuration.
+                        I suspect this will cause some worse ringing with certain difficult loads, but that is preferable to the large overshoot on startup.
+                        In real tests, it also happens to reduce the output voltage noise quite substantially, possibly due to better PSRR with higher bandwidth.
                        
                     </p>
                     <h6><b>Current loop</b></h6>
@@ -284,28 +302,82 @@
                         We also typically want the gain crossover slope to be -20dB/decade for stability.
                         If we want to keep the output stage unchanged, that seems to be with a crossover frequency around 5kHz, which means we don't really have room to increase this bandwidth from the stock configuration and maintain good stability.
                         To increase the current controller bandwidth and kill the overshoot, it would really be better to introduce a lead compensator - i.e., make the CC controller a proper PID controller. 
-                        Maybe later...
+                        <br><br>
+                        The Agilent 6632B has a slow CC response time too, much worse than this, so I am used to it. It could be argued that this allows for proper operation with DUTs that have 
+                        large startup currents - the initial spike is allowed, but if sustained excess current is drawn then it gets clamped. 
+                        <br><br>We'll leave it for now. -____-
                     </p>
                 
                     <h4>Detour: output noise</h4>
                     <p>
-                        <b>"Oh, just one more thing..."</b><br>
                         <img src="2322/noise.jpg" class="img-fluid maxImageWidth"></img><br>
-                        After putting everything back together, this was the output noise at the front output terminals. 
-                        I don't remember seeing any of that when the supply was open. (Was it always like that with the case closed...?)<br><br>
+                        After putting everything back together, this was the output noise at the front output terminals. >100mV peak to peak.
+                        I can't remember if I ever measured the output noise with the case closed before... <br><br>
 
                         <img src="2322/output terminal.png" class="img-fluid maxImageWidth"></img><br>
                         At any rate, this was somehow related to the common mode filtering caps C73 and C74. 
                        <br><br>
                         
                         <img src="2322/no noise.jpg" class="img-fluid maxImageWidth"></img><br>
-                        Removing them completely fixed the noise. I've looked at a few power supply schematics with the same Harrison "floating regulator" topology that omit such output capacitors, so I am relatively confident this won't be a huge issue.
-                        The chassis ground is intact, and the ground terminals are all still usable.
-                        Though in principle, I actually can't explain this. Common mode filtering probably shouldn't do <i>that</i> to the differential mode noise that we measure at the output... <br><br>
+                        Removing them completely fixed the noise. These shouldn't be critical components, just additional filtering.
+                        The chassis ground is intact, and the ground terminals are all still usable. I still cannot really explain what the problem was, though...<br><br>
                     </p>
                     
                     <h4>Results</h4>
                     <p>
+                        (Modifications to Channel 1)
+                        <table style="width:100%">
+                            <tr>
+                                <th>Part </th>
+                                <th>Original value </th>
+                                <th>New value </th>
+                            </tr>
+                            <tr>
+                                <td>
+                                    ROM version
+                                </td>
+                                <td>
+                                    5.23
+                                </td>
+                                <td>
+                                    8.07
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    C48
+                                </td>
+                                <td>
+                                    6.8nF
+                                </td>
+                                <td>
+                                    320pF
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    R75,R83
+                                </td>
+                                <td>
+                                    1k
+                                </td>
+                                <td>
+                                    220R
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    R79 (TBD)
+                                </td>
+                                <td>
+                                    9k1
+                                </td>
+                                <td>
+                                    13.4k
+                                </td>
+                            </tr>
+                        </table><br>
+
                         <img src="2322/multistep fixed.jpg" class="img-fluid maxImageWidth"></img><br>
                         With a set 12V and 1A, the power-on is a clean step. No overshoot on the power-off.<br><br>
 
@@ -314,7 +386,7 @@
                         But this time, very little overshoot on the mode crossover. Much better.
 
                         <br><br>
-                        At some point I will have to test the real stability with different loads, transient response time, etc. But we will leave it at that for now.
+                        At some point I will have to tweak the OVP behaviour. Also test the real stability with different loads, transient response time, etc. But I think that'll for now. 
                     </p>
                 </div>
             </div>
