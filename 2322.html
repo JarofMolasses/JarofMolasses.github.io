@@ -240,7 +240,7 @@
                         <br><br>
                         More importantly, <b>the OVP setpoint is no longer accurate.</b> The new firmware expects a smaller ratio on the sense divider, and as a result the actual voltage limit is about 40% higher than the programmed limit. 
                         That might still be usable, because it's a consistent behaviour. The fix for this, if desired, is simple -  <b>replacing R79 and R45 (9k1) with 13.3k should restore normal OVP function</b>. That would probably
-                        be considerably less effort than reverse engineering the new firmware and changing the ratio in software.
+                        be considerably less effort than reverse engineering the new firmware and changing the ratio in software. Alternatively, replacing R77 and R47 (20k) with a 13.5k is also acceptable.
                         I also suspect the GPIB functionality may be broken with the new firmware, but I haven't checked this since I don't have any GPIB controllers. 
                     </p>
                     
@@ -367,26 +367,79 @@
                             </tr>
                             <tr>
                                 <td>
-                                    R79 (TBD)
+                                    R77
                                 </td>
                                 <td>
-                                    9k1
+                                    20k
                                 </td>
                                 <td>
-                                    13.3k
+                                    13.5k
                                 </td>
                             </tr>
                         </table><br>
 
                         <img src="2322/multistep fixed.jpg" class="img-fluid maxImageWidth"></img><br>
-                        With a set 12V and 1A, the power-on is a clean step. No overshoot on the power-off.<br><br>
+                        With a set 12V and 1A, the power-on is a clean step. No overshoot on the power-off. It looks like the output caps quickly
+                        drain through the shunt resistor on output disable.<br><br>
 
                         <img src="2322/overshoot fixed.jpg" class="img-fluid maxImageWidth"></img><br>
-                        With a set 12V and 0.050A, the output caps trigger the current limit during the startup, as expected. 
-                        But this time, very little overshoot on the mode crossover. Much better.
+                        With a set 12V and 0.050A, the output caps trigger the current limit during the startup. That is pretty much unavoidable unless the output capacitance is decreased, but that 
+                        has a negative effect on both output noise and loop stability. 
+                        But this time, very little overshoot on the mode crossover. Much better.<br><br>
+
+
+                        A quick summary of the characteristics of the (modified) unit, as I see it:
+                        <table style="width:100%">
+                            <tr>
+                                <th>
+                                    Pros
+                                </th>
+                                <th>
+                                    Cons
+                                </th>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <li>
+                                        Low output noise <br>
+                                        (typically around 10mVpp and 1mApp)
+                                    </li>
+                                    <li>
+                                        Relatively clean output enable/disable
+                                    </li>
+                                    <li>
+                                        Remote control capable
+                                    </li>
+                                    <li>
+                                        Keypad entry
+                                    </li>
+                                </td>
+                                <td>
+                                    <li>
+                                        Minor voltage glitch on hard power off (<1V). <br>
+                                        It's good to disconnect the leads before switching power off.
+                                    </li>
+                                    <li>
+                                        Output is still low-impedance when disabled
+                                    </li>
+                                    <li>
+                                        Slow current loop response 
+                                    </li>
+                                    <li>
+                                        Can't simultaneously turn on both channels unless in tracking mode. 
+                                    </li>
+                                    <li>
+                                        High output capacitance 300uF. <br> You can remove some but the output noise significantly suffers.
+                                    </li>
+                                    <li>
+                                        This thing is loud.
+                                    </li>
+                                </td>
+                            </tr>
+                        </table>
 
                         <br><br>
-                        At some point I will have to tweak the OVP behaviour. Also test the real stability with different loads, transient response time, etc. But we'll leave it at that for now. 
+                        At some point I test the real stability with different loads, transient response time, etc. But we'll leave it at that for now. 
                     </p>
                 </div>
             </div>
