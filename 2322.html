@@ -116,7 +116,7 @@
                         Readback is done using a software SAR ADC running on the microcontroller.
                         The DAC output is periodically used to generate reference voltages for the measurement comparators.
 
-                        Also shown is U35A, which handles the overvoltage protection. OVP is a fast analog cutoff, while OCP is handled in software and is much slower to respond.
+                        Also shown is U35A, which handles the overvoltage protection. Both OVP and OCP are primarily handled in software.
                     </p>                    
                     
                     <h5 id="control">Controllers</h5>
@@ -319,8 +319,7 @@
                        <br><br>
                         
                         <img src="2322/no noise.jpg" class="img-fluid maxImageWidth"></img><br>
-                        Removing them completely fixed the noise. These shouldn't be critical components, just additional filtering.
-                        The chassis ground is intact, and the ground terminals are all still usable. I still cannot really explain what the problem was, though...<br><br>
+                        Removing them completely fixed the noise. The chassis ground is intact, and the ground terminals are all still usable. Maybe the common mode rejection is worse now.<br><br>
                     </p>
                     
                     <h4>Results</h4>
@@ -439,7 +438,12 @@
                         </table>
 
                         <br><br>
-                        At some point I test the real stability with different loads, transient response time, etc. But we'll leave it at that for now. 
+                        There's one more thing. The OVP protection is very slow, which I don't expect. Once, 
+                        <a href="http://www.kerrywong.com/2015/05/06/amrel-pps-2322-programmable-power-supply-teardown/">Kerry Wong</a> tested his unit and 
+                        OVP responded within a few ms, but mine takes about 400ms to kill the output. It never exceeds the set limit, however, so it is still a kind of functional OVP. But, that is strange and 
+                        I'll probably need to take another look at this behaviour.
+
+                        At some point I also need to test the real stability with different loads, transient response time, etc. We'll leave it at that for now, though.
                     </p>
                 </div>
             </div>
