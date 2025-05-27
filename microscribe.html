@@ -22,7 +22,7 @@
                 <div class="container-fluid maxArticleWidth">
                     <h4 id="Microscribe">MicroScribe</h4>
                     <p>
-                        <img src="microscribe/microscribe main.jpg" class="img-fluid maxImageWidth"></img><br>
+                        <img src="Microscribe/microscribe main.jpg" class="img-fluid maxImageWidth"></img><br>
                         Interfacing an old serial-link type CMM (MicroScribe 3DX) with modern hardware. This is a really interesting portable CMM that uses forward kinematics like a robot arm to 
                         track the tip position.
                         Software:
@@ -34,8 +34,8 @@
 
                     <h4>Hardware</h4>
                     <p>
-                        <img src="microscribe/arduino adapter.jpg" class="img-fluid maxImageWidth"></img><br>
-                        <img src="microscribe/arduino controller wiring.png" class="img-fluid maxImageWidth"></img><br>
+                        <img src="Microscribe/arduino adapter.jpg" class="img-fluid maxImageWidth"></img><br>
+                        <img src="Microscribe/arduino controller wiring.png" class="img-fluid maxImageWidth"></img><br>
                         If our PC had an RS-232 port like the old days, we could directly connect the MicroScribe and have our python program handle everything.
                         Unfortunately not the case for us now, so instead we use an Arduino as RS-232 adapter. 
                         <br><br>
@@ -46,7 +46,7 @@
 
                     <h4>Software</h4>
                     <p>
-                        <img src="microscribe/3ddemo.png" class="img-fluid maxImageWidth"></img><br>
+                        <img src="Microscribe/3ddemo.png" class="img-fluid maxImageWidth"></img><br>
                         The PC software is written in python and unwisely uses matplotlib as a 3D graphics engine.
                         It shows a live updating 3D model of the arm which is not totally practical but is very fun. 
                         <br><br>
@@ -60,7 +60,7 @@
                     </p>
                     <h5>Forward kinematics</h5>
                     <p>
-                        <img src="microscribe/DHmodel visualization.png" class="img-fluid maxImageWidth"></img><br>
+                        <img src="Microscribe/DHmodel visualization.png" class="img-fluid maxImageWidth"></img><br>
                         We can determine the position and orientation of the stylus by computing the forward kinematics of the arm. 
                         There are many ways to describe the kinematics of the system, so how we approach this will depend on how the constants have been stored in 
                         the machine EEPROM.
@@ -146,23 +146,23 @@
 
                     <h5>Point clouds</h5>
                     <p>
-                        <img src="microscribe/blockirl.jpg" class="img-fluid maxImageWidth"></img><br>
-                        <img src="microscribe/pointcloud.png" class="img-fluid maxImageWidth"></img><br>
+                        <img src="Microscribe/blockirl.jpg" class="img-fluid maxImageWidth"></img><br>
+                        <img src="Microscribe/pointcloud.png" class="img-fluid maxImageWidth"></img><br>
                         Point clouds up to 2000 points can be generated, and exported as CSV files. 
                     </p>
 
                     <h5>Point to plane measurements</h5>
                     <p>
-                        <img src="microscribe/pointtoplane.png" class="img-fluid maxImageWidth"></img><br>
-                        <img src="microscribe/blockcheck.jpg" class="img-fluid maxImageWidth"></img><br>
+                        <img src="Microscribe/pointtoplane.png" class="img-fluid maxImageWidth"></img><br>
+                        <img src="Microscribe/blockcheck.jpg" class="img-fluid maxImageWidth"></img><br>
                         Three points can be collected (starting with origin, then defining two basis vector endpoints) which define a reference plane. 
                         Then, the normal distance between the tip and reference plane can be measured.
                     </p>
 
                     <h5>Point to point measurements</h5>
                     <p>
-                        <img src="microscribe/pointtopoint.png" class="img-fluid maxImageWidth"></img><br>
-                        <img src="microscribe/platecheck.jpg" class="img-fluid maxImageWidth"></img><br>
+                        <img src="Microscribe/pointtopoint.png" class="img-fluid maxImageWidth"></img><br>
+                        <img src="Microscribe/platecheck.jpg" class="img-fluid maxImageWidth"></img><br>
                         A second measurement will bring up the point-to-point distance between the two latest measurement points.
                     </p>
                 
