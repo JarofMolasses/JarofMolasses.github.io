@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <div id="header"></div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"> </script>
+    <script>
+        $("#header").load("include_head.html");
+    </script>
+    <title> MicroScribe interface </title>
+</head>
+<body>
+    <div id="navbar"></div>
+    <div class="container-fluid my-4" style="max-width:97%">
+        <div class="row">
+            <div class="col d-none d-sm-block" style="position:fixed">
+                <div class="container-responsive">
+
+                </div>
+            </div>
+            
+            <div class = "col-8 offset-2">
+                <div class="container-fluid maxArticleWidth">
+                    <h4 id="Microscribe">MicroScribe</h4>
+                    <p>
+                        <img src="microscribe/microscribe main.jpg" class="img-fluid maxImageWidth"></img><br>
+                        Interfacing an old serial-link type CMM (MicroScribe 3DX) with modern hardware. This is a really interesting portable CMM that uses forward kinematics like a robot arm to 
+                        track the tip position.
+                        Software:
+                        <a 
+                        href="https://github.com/jarofmolasses/microscribe"> 
+                        https://github.com/jarofmolasses/microscribe 
+                        </a><br>
+                    </p>
+
+                    <h4>Hardware</h4>
+                    <p>
+                        <img src="microscribe/arduino adapter.jpg" class="img-fluid maxImageWidth"></img><br>
+                        <img src="microscribe/arduino controller wiring.png" class="img-fluid maxImageWidth"></img><br>
+                        If our PC had an RS-232 port like the old days, we could directly connect the MicroScribe and have our python program handle everything.
+                        Unfortunately not the case for us now, so instead we use an Arduino as RS-232 adapter. 
+                        <br><br>
+                        The Arduino isn't strictly necessary to do this, a direct USB-RS232 adapter could work as well and would be cleaner hardware-wise.
+                        I didn't have one when I started the project and it was convenient enough to write a bit of Arduino code to handle it.
+                    </p>
+                    
+
+                    <h4>Software</h4>
+                    <p>
+                        <img src="microscribe/3ddemo.png" class="img-fluid maxImageWidth"></img><br>
+                        The PC software is written in python and unwisely uses matplotlib as a 3D graphics engine.
+                        It shows a live updating 3D model of the arm which is not totally practical but is very fun. 
+                        <br><br>
+                        It has some basic CMM functionality:
+                        <ul>
+                            <li>Define reference plane using three points</li>
+                            <li>Measure normal distance to reference plane</li>
+                            <li>Measure distance between two points</li>
+                            <li>Generate and export point clouds</li>
+                        </ul>
+                    </p>
+                    <h5>Forward kinematics</h5>
+                    <p>
+                        <img src="microscribe/DHmodel visualization.png" class="img-fluid maxImageWidth"></img><br>
+                        We can determine the position and orientation of the stylus by computing the forward kinematics of the arm. 
+                        There are many ways to describe the kinematics of the system, so how we approach this will depend on how the constants have been stored in 
+                        the machine EEPROM.
+                        The Arduino code provides a function <code>print_hci_strings()</code> to pull the system information from the unit, we get: <br><br>
+
+                        <code>
+                            PRODUCT NAME: MicroScribe3D <br>
+                            PRODUCT ID: MSCR<br>
+                            MODEL NAME: DX<br>
+                            COMMENT: Standard+Beta<br>
+                            PARAM FORMAT: Format DH0.5<br>
+                            VERSION: HCI 2.0<br>
+                        </code>
+                        <br>
+                        I'm actually not sure what "DH0.5" refers to, but I assumed that it means modified Denavit-Hartenberg (as opposed to standard DH) parameters, and this seems to check out.
+                        <br><br>
+                        A reference frame is placed at each joint, plus the tip of the stylus, for a total of n = 6. 
+                        The static "zeroth" reference frame is at the base of the unit.
+                        Each reference frame is described by 4 parameters - 3 constant and 1 variable:
+                        <ul>
+                            <li>\(D\) : (constant) distance along current Z axis to previous reference frame</li>
+                            <li>\(A\) : (constant) length of the common normal between current reference frame and previous</li>
+                            <li>\(\alpha\) : (constant) rotation about the common normal between current reference frame and previous </li>
+                            <li>\(\theta\) : (variable) joint rotation angle </li>
+                        </ul>
+
+                        The Arduino code also provides a function <code>print_param_block()</code>, with which we can get the constant parts of the transformation matrices: <br><br>
+                        <code>
+                            OFFSETS D: <br>
+                            210.820007  <br>
+                            -22.250398 <br>
+                            -0.025400  <br>
+                            234.848403  <br>
+                            8.128000    <br>
+                            -134.010391 <br>
+
+                            <br>
+                            OFFSETS A:<br>
+                            0.000000<br>
+                            24.307800<br>
+                            260.400787<br>
+                            13.893800<br>
+                            -10.160000<br>
+                            10.160000<br>
+
+                            <br>
+                            SKEW ALPHA:<br>
+                            0.000000<br>
+                            1.567824<br>
+                            0.002684<br>
+                            1.567920<br>
+                            -1.572618<br>
+                            -1.569550<br>
+                        </code><br>
+
+                        The MicroScribe is polled periodically for joint angle \(\theta\) as measured by the encoders. 
+                        With all D-H parameters populated, the 3D affine transformation matrix \(T_n\) can be written to describe the position and orientation of
+                         the \(n\)-th reference frame relative to the previous one, like this:
+                        $$ T_n = \begin{bmatrix} 
+                                \cos(\theta_n)&\sin(\theta_n)&0 &A_{n-1} \\
+                                \sin(\theta_n)\cos(\alpha_{n-1})&\cos(\theta_n)\cos(\alpha_{n-1})&-\sin(\alpha_{n-1})&-D_n\sin(\alpha_{n-1}) \\
+                                \sin(\theta_n)\sin(\alpha_{n-1})&\cos(\theta_n)\sin(\alpha_{n-1})&\cos(\alpha_{n-1})&D_n\cos(\alpha_{n-1}) \\
+                                0 & 0 & 0 & 1
+                                \end{bmatrix}                  
+                        $$
+
+                        The zeroth reference frame is the global fixed reference, its matrix is simply the identity matrix: 
+                        $$
+                        T_0 = \begin{bmatrix}
+                             1 & 0 & 0 & 0\\
+                             0 & 1 & 0 & 0\\
+                             0 & 0 & 1 & 0\\
+                             0 & 0 & 0 & 1\\
+                             \end{bmatrix}
+                        $$
+
+                        It follows then that the tip position and orientation described by \(T\) is found by multiplying each transformation in the chain: 
+                        $$
+                        T = [T_0][T_1][T_2][T_3][T_4][T_5][T_6]
+                        $$
+
+                    </p>
+
+                    <h5>Point clouds</h5>
+                    <p>
+                        <img src="microscribe/blockirl.jpg" class="img-fluid maxImageWidth"></img><br>
+                        <img src="microscribe/pointcloud.png" class="img-fluid maxImageWidth"></img><br>
+                        Point clouds up to 2000 points can be generated, and exported as CSV files. 
+                    </p>
+
+                    <h5>Point to plane measurements</h5>
+                    <p>
+                        <img src="microscribe/pointtoplane.png" class="img-fluid maxImageWidth"></img><br>
+                        <img src="microscribe/blockcheck.jpg" class="img-fluid maxImageWidth"></img><br>
+                        Three points can be collected (starting with origin, then defining two basis vector endpoints) which define a reference plane. 
+                        Then, the normal distance between the tip and reference plane can be measured.
+                    </p>
+
+                    <h5>Point to point measurements</h5>
+                    <p>
+                        <img src="microscribe/pointtopoint.png" class="img-fluid maxImageWidth"></img><br>
+                        <img src="microscribe/platecheck.jpg" class="img-fluid maxImageWidth"></img><br>
+                        A second measurement will bring up the point-to-point distance between the two latest measurement points.
+                    </p>
+                
+                    <h4>Further work</h4>
+                    <p>
+                        So many things...
+                        <ul>
+                            <li>Porting to pyQT or other GUI framework</li>
+                            <li>Moving Arduino code to python to allow for the use of a simple RS232-USB adapter</li>
+                            <li>Calibration and alignment of DH parameters</li>
+                            <li>More CMM capabilities - flatness, parallelism, cylindricity, etc.</li>
+                        </ul>
+                    </p>
+
+                    <h4>Useful references</h4>
+                    <ul>
+                        <li><a href="https://www.brainvoyager.com/bv/doc/UsersGuide/CoordsAndTransforms/SpatialTransformationMatrices.html">Notes on 3D transforms</a></li>
+                        <li><a href="https://intelligentsystemslab.org.ntnu.no/course/DH/index.html">Interactive DH parameters visualization</li>
+                        <li><a href="https://en.wikipedia.org/wiki/Denavit%E2%80%93Hartenberg_parameters">Introduction to DH on Wikipedia</a></li>
+                        <li><a href="https://github.com/precise-simulation/mesh-viewer/blob/master/meshviewer_mpl_tk.py">Example of matplotlib 3D within Tkinter</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript: Above  -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"> </script> <script>$("#navbar").load("/navbar.html"); </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+</body>
+</html>
