@@ -40,17 +40,18 @@
                         Unfortunately not the case for us now, so instead we use an Arduino as RS-232 adapter. 
                         <br><br>
                         The Arduino isn't strictly necessary to do this, a direct USB-RS232 adapter could work as well and would be cleaner hardware-wise.
-                        I didn't have one when I started the project and it was convenient enough to write a bit of Arduino code to handle it.
+                        I didn't have one when I started the project and it was convenient enough to write a bit of Arduino code to handle it, using the original SDK as a starting point.
+                        Mercifully, the old SDK and an example Arduino port was archived here: <a href="https://github.com/martennettelbladt/microscribe/tree/main"> https://github.com/martennettelbladt/microscribe/tree/main </a>
                     </p>
                     
 
                     <h4>Software</h4>
                     <p>
                         <img src="Microscribe/3ddemo.png" class="img-fluid maxImageWidth"></img><br>
-                        The PC software is written in python and unwisely uses matplotlib as a 3D graphics engine.
-                        It shows a live updating 3D model of the arm which is not totally practical but is very fun. 
+                        The PC software is written in python and unwisely uses matplotlib as a 3D graphics engine. Matplotlib is not intended to do this, but it works pretty decently.
+                        The window shows a live updating 3D model of the arm which is not totally practical but is very fun.
                         <br><br>
-                        It has some basic CMM functionality:
+                        The app has some basic CMM functionality:
                         <ul>
                             <li>Define reference plane using three points</li>
                             <li>Measure normal distance to reference plane</li>
@@ -168,9 +169,8 @@
                 
                     <h4>Further work</h4>
                     <p>
-                        So many things...
                         <ul>
-                            <li>Porting to pyQT or other GUI framework</li>
+                            <li>Porting to pyQT</li>
                             <li>Moving Arduino code to python to allow for the use of a simple RS232-USB adapter</li>
                             <li>Calibration and alignment of DH parameters</li>
                             <li>More CMM capabilities - flatness, parallelism, cylindricity, etc.</li>
@@ -179,6 +179,7 @@
 
                     <h4>Useful references</h4>
                     <ul>
+                        <li><a href="https://github.com/martennettelbladt/microscribe/tree/main">Arduino example and Immersion SDK from martennettelbladt </a></li>
                         <li><a href="https://www.brainvoyager.com/bv/doc/UsersGuide/CoordsAndTransforms/SpatialTransformationMatrices.html">Notes on 3D transforms</a></li>
                         <li><a href="https://intelligentsystemslab.org.ntnu.no/course/DH/index.html">Interactive DH parameters visualization</li>
                         <li><a href="https://en.wikipedia.org/wiki/Denavit%E2%80%93Hartenberg_parameters">Introduction to DH on Wikipedia</a></li>
