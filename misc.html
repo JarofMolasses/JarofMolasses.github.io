@@ -14,6 +14,7 @@
             <div class="col-2 d-none d-sm-block" style="position:fixed">
                 Jump to:
                 <ul>
+                <li><a href="#SZ3060">SZ3060</a></li>
                 <li><a href="#HP6632B">6632B</a></li>
                 <li><a href="#54624A">54624A</a></li>
                 <li><a href="#KP61">KP61</a></li>
@@ -22,6 +23,175 @@
             </div>
             <div class="col-8 offset-2">
                 <div class="container-fluid maxArticleWidth">
+                    <h4 id="SZ3060">Magnification and the Olympus SZ3060</h4>
+                    <p>
+                        <h5>Thoughts on different magnifying devices</h5>
+                        <p>
+                            Stereo microscopes are not the only way to get a better look at dense SMT circuits (or other small things), of course.
+                             In my opinion, however, a good stereo microscope is the most versatile of the lot. 
+                            <ul>
+                                <li><b>Stereo microscopes</b></li>
+                                -stereoscopic <br>
+                                -usually have long zoom ranges - good for general work or close inspection <br>
+                                -well suited for documentation, especially if trinocular port is available<br>
+                                -takes up a lot of bench space <br>
+                                -most Greenough designs with fixed eyetube angles at 45 or 60 degrees have just mediocre ergonomics<br><br>
+                                
+                                <li><b>Head mounted magnifiers</b></li>
+                                -stereoscopic <br>
+                                -good ergonomics <br>
+                                -takes up no bench space <br>
+                                -can be used away from the bench <br>
+                                -basically not usable for documentation purposes <br>
+                                -low magnifications only <br><br>
+
+                                <li><b>Large single lens magnifiers</b></li>
+                                -stereoscopic <br>
+                                -can be unergonomic - optical path is dead vertical or only titled slightly<br>
+                                -takes up even more space than the stereo microscope <br>
+                                -single large lens usually has significant optical distortion <br>
+                                -low magnifications only <br><br>
+
+                                <li><b>Digital microscopes</b></li>
+                                -not stereoscopic <br>
+                                -can have extremely long zoom ranges <br>
+                                -compact compared to optical microscopes <br>
+                                -most practical for documentation <br>
+                                -most ergonomic <br>
+                            </ul>
+                        </p>
+                        
+                        <br>
+                        <h5>The Olympus SZ3060</h5>
+                        <p>
+                            <img src="sz3060/main.jpg" class="img-fluid maxImageWidth"></img><br>
+                            The SZ3060 is a low-spec model in the Olympus catalog, meant to be integrated into wire bonders and wafer probers. 
+                            It can thus be aquired quite inexpensively, with some patience.
+                            Nonetheless, it still has excellent optics and good mechanical build quality. The images have good contrast, and the resolution is high enough for any bench work.
+                            Among other factors, there is usually a tradeoff between depth-of-field and resolution, and stereo microscopes are forced to keep the NA (numerical aperture) of the system low to ensure 
+                            a tolerable depth of field.
+                        </p>
+                        <p>
+                            <img src = "sz3060/optical path .JPG" class = "img-fluid max-width">
+                            As shown, the reversing assembly consists of three prisms and two mirrors. In principle, the two additional mirrors cause a minor loss in contrast compared to 
+                            full prism designs like the Nikon SMZ-2B. In practice, it's hardly noticeable.
+                            
+                            <br><br>
+                            For a <a href="https://www.microscopyu.com/techniques/stereomicroscopy/introduction-to-stereomicroscopy">Greenough design</a>, the SZ3060 has good sharpness across the field, due to the low
+                            convergence angle of the optical paths (10 degrees) and the close spacing of the lenses. Chromatic and spherical aberrations are not noticeable throughout the zoom range, but there is a 
+                            significant pincushion distortion when photographing through the eyepieces. This effect is less pronounced when viewed by a human eye.                           
+                            
+                            <br><br>
+                            The most apparent downside is the 60 degree tilt of the eyetubes, which is generally less ergonomic than the typical 45 degree on most modern microscopes (even 45 degrees is not totally ideal, actually).
+                            Traditionally, 60 degree eyetubes were very common - the Bausch and Lomb Stereozoom series (minus the SZ7), the American Optical StereoStar series, the Nikon SMZ-1, and many others all have 60 degree eyetubes. 
+                            
+                            <br></br>
+                            The ergonomics can be improved by sacrificing some depth of field and tilting the microscope body downwards 10-15 degrees. At the 
+                            low magnifications that we usually use for soldering, the field is often deep enough that the tilt does not cause appreciable distortion
+                            or degradation of focus. 
+                        </p>
+
+                        <h5>Optical alignment</h5>
+                        <p>
+                            Stereo microscopes require very fine alignment between the two optical paths to present good images that do not cause fatigue for the user. This is complicated by zoom mechanisms, 
+                            in that alignment needs to be maintained at all zoom levels.
+
+                            <br><br>
+                            There are three types of misalignments in a zoom stereo microscope:
+                            <ol>
+                                <li>Misalignment between left and right images</li>
+                                <li>Decentration of image when zooming</li>
+                                <li>Loss of focus when zooming</li>
+                                <li>Decentration of image when adjusting interpupillary distance</li>
+                            </ol>
+
+                            The first is by far the most important alignment to get right. Even if the zoom alignment is poor, the microscope can produce perfectly usable images. However,
+                            if there is noticeable misalignment between the left and right eyes, the microscope can be essentially inoperable at any zoom level. 
+
+                            <br><br>
+                            The <a href = "https://alanwood.net/downloads/olympus-sz3060-sz4045-sz4060-repair-manual.pdf">SZ3060 service manual</a> doesn't mention it, 
+                            but a quick fix for misalignment #1 can be done without touching the zoom lenses - provided that misalignments #2, #3, and #4 are not present or very minor. 
+                            <img src="sz3060/eyetubes.png" class="img-fluid maxImageWidth"></img>
+                            The four screws attaching each eyetube assembly to the reversing assembly (called out as <b>AB 3x8SA 8 pcs.</b> in step 2)
+                            can be loosened and the eyetubes can be translated as necessary to correct for slight discrepancies between the left and right images. 
+                            If there is major decentration or loss of focus through the zoom range, then the full disassembly and proper alignment should be done.
+                        </p>
+
+                        <h5>Test images</h5>
+                        <p>
+                            <img src="sz3060/led 4x5.jpg" class="img-fluid maxImageWidth"></img>
+                            <i><small>4.5X magnification. 0.5X lens * 0.9X objective</small></i>
+                            <br><br>
+                            <img src="sz3060/led 20x.jpg" class="img-fluid maxImageWidth"></img>
+                            <i><small>20X magnification. 0.5X lens * 4X objective</small></i>
+                            <br><br>
+                            <img src="sz3060/led 40x.jpg" class="img-fluid maxImageWidth"></img>
+                            <i><small>40X magnification. 1X (no lens) * 4X objective</small></i>
+                            <br><br>
+                            <img src="sz3060/led 80x.jpg" class="img-fluid maxImageWidth"></img>
+                            <i><small>80X magnification. 2x lens * 4X objective</small></i>
+                        </p>
+
+                        <h5>Setup cost</h5>
+                        <table style = "width:100%">
+                            <tr>
+                                <td>
+                                    <b>Part</b>
+                                </td>
+                                <td>
+                                    <b>Cost (CAD)</b>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    SZ3060 microscope pod (used)
+                                </td>
+                                <td>
+                                    50
+                                </td>
+                            </tr>
+                                <td>
+                                    10x/23 adjustable eyepieces
+                                </td>
+                                <td>
+                                    50
+                                </td>
+                            <tr>
+                                <td>
+                                    0.5X auxiliary lens
+                                </td>
+                                <td>
+                                    15
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Basic monitor arm
+                                </td>
+                                <td>
+                                    40
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Focussing mount 76mm (used)
+                                </td>
+                                <td>
+                                    80
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Total
+                                </td>
+                                <td>
+                                    <b>235</b>
+                                </td>
+                            </tr>
+                        </table>
+                        
+                    </p>
+                        
                     <h4 id="HP6632B">6632B</h4>
                         <p>
                         <img src="hp6632b/frontpanel.jpg" class="img-fluid maxImageWidth"></img><br>
