@@ -22,18 +22,16 @@
                     <h4 id="2322">AMREL PPS-2322 power supply</h4>
                     <p>
                         <img src="2322/2322main.jpg" class="img-fluid maxImageWidth"></img><br>
-                        Attempts to reverse engineer a digital bench power supply and improve its performance.
                     </p>
 
                     <p>
                         The 2322 is a dual channel, 30V 2A programmable supply. 
-                        I really do like this sort of multi-channel remote control programmable linear power supply, they're not easy to find so it's worth hanging on to them. They're also really expensive most of the time.
+                        I really like this sort of multi-channel remote control programmable linear power supply, they're not easy to find at low cost. You can put the outputs in parallel, series, 
+                        generate positive and negative rails. Very useful.
                         <br><br>
-                        This one came with a few inexcusable issues, in my opinion. 
+                        This one came with a few problems to solve.
                         Some of the behaviour was so strange I thought it was faulty, and I felt compelled to 
-                        reverse engineer the circuit to see if I could do something about it. 
-                        <br><br>
-                        <small>Spoiler: I'm pretty sure now that it was just designed that way.</small>
+                        reverse engineer the circuit to see if anything could be changed.
                     </p>
 
                     <h4> The issues </h4>
@@ -41,7 +39,7 @@
                     <p>
                         <img src="2322/enable_overshoot_20V.jpg" class="img-fluid maxImageWidth"></img><br>
                         Two distinct problems are shown in this power on/off curve. 
-                        <li>The constant current limit kicks on every startup - that's the weird linear slope as the output capacitor charges</li>
+                        <li>The constant current limit kicks on every startup - that's the initial linear slope</li>
                         <li>There is overshoot at CC-CV transition and also when the output is disabled</li>
                         <br>
 
@@ -52,7 +50,7 @@
                         the set current, the output capacitor will trip the current limit on startup at higher set voltages (as though the real current limit only kicks in after a delay... more on that later).
                         <br><br>
                         The latter problem is pretty serious. That is about 0.3V on the rising edge and -0.7V on the falling edge. I think something like this won't destroy anything.
-                        Still, I hate it. I don't consider that negligible overshoot.
+                        Still, I don't like it, it's quite significant overshoot.
                     </p>
 
                     <h5 id="multistep">Issue 2. "Multi-step" output</h5>
@@ -67,9 +65,7 @@
                     <p>
                         <img src="2322/CC overshoot.jpg" class="img-fluid maxImageWidth"></img><br>
                         Here's the voltage over a 47 ohm resistor with the output set to 8V and 10mA. The voltage rises to 8V before the current limit kicks in, 
-                        in other words a peak 170mA is drawn. It takes around 20ms for the controller to bring the current back down.
-                        Though a bench supply is not the best option for a precision low current source (especially not this one, the CC mode noise is 
-                        only specified as 1mArms), I would improve this if possible. <br>
+                        in other words a peak 170mA is drawn. It takes around 20ms for the controller to bring the current back down. <br>
                     </p>
 
                     <h4 id="Reverse engineering"> Reverse engineering and modifications </h4>
@@ -155,7 +151,7 @@
 
                         The open loop system crossover frequency for the CC mode is at 6.2kHz and the phase margin is around 75 degrees. <br><br>
                         
-                        The CC controller isn't very good, and part of the reason it is slow may be because it is missing a proportional action. It's also quite bad at rejecting power supply ripple. 
+                        The CC controller is very slow. It's also quite bad at rejecting power supply ripple. 
                         I suppose the reason for using a pure I-controller here is so that it has a very subdued response and the CV loop can dominate. Usually, CV mode is the normal 
                         operating condition for a lab power supply, so it's reasonable that voltage control gets priority over current control. 
                         Still, it may be good to push the CC loop crossover frequency up to try to suppress the current overshoot a bit. Ultimately, maybe the CC mode needs a better controller design altogether.
@@ -229,7 +225,7 @@
                     <p>
                         As for the sequencing issue, it's a relatively minor problem. More of an annoyance than anything. It's also quite a difficult one to fix, as it's entirely a firmware issue. 
                         The original ROM chip is a 27C512 UVEPROM, and I replaced it with a W27C512 EEPROM. <br><br>
-                        You could dive into the 8051 assembly to reverse the order in the original firmware, which is doable but until I do a full reverse engineering of the firmware, I don't trust that so much. 
+                       
                         Very fortunately, you can find new firmware for a rebranded, later version of this unit:
                         <a href=https://www.eevblog.com/forum/testgear/motech-amrel-pps-1002-diagramschematic/msg3605273/#msg3605273> the Motech 1204</a>. 
 
@@ -248,8 +244,7 @@
                     <h6><b>Voltage loop</b></h6>
                     <p>
                         <img src="2322/simulated overshoots.png" class="img-fluid maxImageWidth"></img><br>
-                        Now we get to the interesting part, dealing with the overshoot. Taking the reverse engineered circuit into LTspice, it seems that the overshoot at the CC/CV transition and the falling edge are both expected.
-                        It is entirely possible something has gone faulty in both the real unit and in my simulation, but I figure the odds of that are low.<br><br>
+                        Now to dealing with the overshoot. Taking the reverse engineered circuit into LTspice, it seems that the overshoot at the CC/CV transition and the falling edge are both expected.<br><br>
 
                         <img src="2322/measured overshoot negative.png" class="img-fluid maxImageWidth"></img><br>
                         Looking at the negative overshoot, for example, the simulated overshoot is remarkably close to what we can measure on the unit. <br><br>
@@ -303,9 +298,9 @@
                         If we want to keep the output stage unchanged, that seems to be with a crossover frequency around 5kHz, which means we don't really have room to increase this bandwidth from the stock configuration and maintain good stability.
                         To increase the current controller bandwidth and kill the overshoot, it would really be better to introduce a lead compensator - i.e., make the CC controller a proper PID controller. 
                         <br><br>
-                        The Agilent 6632B has a slow CC response time too, much worse than this, so I am used to it. It could be argued that this allows for proper operation with DUTs that have 
+                        The Agilent 6632B has a slow CC response time too, much worse than this. It could be argued that this allows for proper operation with DUTs that have 
                         large startup currents - the initial spike is allowed, but if sustained excess current is drawn then it gets clamped. 
-                        <br><br>We'll leave it for now. -____-
+                        <br><br>We'll leave it alone.
                     </p>
                 
                     <h4>Detour: output noise</h4>
@@ -319,7 +314,7 @@
                        <br><br>
                         
                         <img src="2322/no noise.jpg" class="img-fluid maxImageWidth"></img><br>
-                        Removing them completely fixed the noise. The chassis ground is intact, and the ground terminals are all still usable. Maybe the common mode rejection is worse now.<br><br>
+                        Removing them completely silenced the noise. <br><br>
                     </p>
                     
                     <h4>Results</h4>
@@ -399,6 +394,7 @@
                             </tr>
                             <tr>
                                 <td>
+                                    <ul>
                                     <li>
                                         Low output noise <br>
                                         (typically around 10mVpp and 1mApp)
@@ -411,9 +407,10 @@
                                     </li>
                                     <li>
                                         Keypad entry
-                                    </li>
+                                    </li></ul>
                                 </td>
                                 <td>
+                                    <ul>
                                     <li>
                                         Minor voltage glitch on hard power off (<1V). <br>
                                         It's good to disconnect the leads before switching power off.
@@ -430,14 +427,12 @@
                                     <li>
                                         High output capacitance 300uF. <br> You can remove some but the output noise significantly suffers.
                                     </li>
-                                    <li>
-                                        This thing is loud.
-                                    </li>
+                                    </ul>
                                 </td>
                             </tr>
                         </table>
 
-                        <br><br>
+                        <br>
                         There's one more thing. The OVP protection is very slow, which I don't expect. Once, 
                         <a href="http://www.kerrywong.com/2015/05/06/amrel-pps-2322-programmable-power-supply-teardown/">Kerry Wong</a> tested his unit and 
                         OVP responded within a few ms, but mine takes about 400ms to kill the output. It never exceeds the set limit, however, so it is still a kind of functional OVP. But, that is strange and 
