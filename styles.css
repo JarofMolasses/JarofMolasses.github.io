@@ -1,15 +1,7 @@
 .maxArticleWidth {
     max-width:1000px;
 }
-/* Limit images to this percentage of the max article width
-I think images would only ever be smaller than the text section*/
-.maxImageWidth {
-    max-width:100%
-}
 
-.maxImageHeight {
-    max-height:600px;
-}
 
 .fancytitle {
     font-family: 'Century Gothic';
@@ -46,3 +38,18 @@ table, th, td {
     border: 1px solid grey;
     border-collapse: collapse;
 }
+
+img {
+    min-height:200px;
+    max-width:100%;         /* percent tracks with the container the image is in */
+    max-height:50vh;        /*vh tracks with the viewport (the whole window)*/
+}
+
+.maxImageWidth {
+    max-width:100%;         /* percent tracks with the container the image is in */
+}
+
+.maxImageHeight {
+    max-height:50vh;        /*vh tracks with the viewport (the whole window)*/
+} 
+
