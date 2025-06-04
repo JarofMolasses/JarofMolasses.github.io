@@ -23,9 +23,11 @@
                     <h4 id="Microscribe">MicroScribe</h4>
                     <p>
                         <img src="Microscribe/microscribe main.jpg" class="img-fluid maxImageWidth maxImageHeight"></img><br>
-                        Interfacing an old serial-link type CMM (MicroScribe 3DX) with modern hardware. This is a really interesting portable CMM that uses forward kinematics like a robot arm to 
-                        track the tip position.
-                        Software:
+                        Connecting to an old portable CMM (MicroScribe 3DX). This is a robot arm type CMM using 
+                        serial link kinematics to track the tip position. I wanted to check the functionality of this device 
+                        but the original software wasn't readily available, so I wrote my own.
+
+                        The code:
                         <a 
                         href="https://github.com/jarofmolasses/microscribe"> 
                         https://github.com/jarofmolasses/microscribe 
@@ -52,7 +54,7 @@
                         but it actually works pretty decently - lack of graphics acceleration notwithstanding. Using the joint angles reported by the Microscribe, 
                         a live updating 3D model of the arm is displayed in the GUI.
                         <br><br>
-                        The app has some basic CMM functionality:
+                        The app is mostly intended to be a simple demonstration but it has some CMM functionality:
                         <ul>
                             <li>Define reference plane using three points</li>
                             <li>Measure normal distance to reference plane</li>
@@ -171,10 +173,11 @@
                     <h4>Further work</h4>
                     <p>
                         <ul>
+                            <li>Fitting a ruby ball tip</li>
                             <li>Porting to pyQT</li>
                             <li>Moving Arduino code to python to allow for the use of a simple RS232-USB adapter</li>
                             <li>Calibration and alignment of DH parameters</li>
-                            <li>More CMM capabilities - flatness, parallelism, cylindricity, etc.</li>
+                            <li>More CMM capabilities - checking against CAD model, advanced measurements, etc.</li>
                         </ul>
                     </p>
 
