@@ -4,7 +4,7 @@
     <div id="header"></div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"> </script>
     <script>
-        $("#header").load("include_head.html");
+        $("#header").load("../include_head.html");
     </script>
     <title> Macroscope </title>
 </head>
@@ -22,7 +22,7 @@
                 <div class="container-fluid maxArticleWidth">
                     <h4 id="macroscope">Macroscope</h4>
                     <p>
-                        <img src="macroscope/macroscope1.jpg" class="img-fluid maxImageWidth"></img><br>
+                        <img src="../macroscope/macroscope1.jpg" class="img-fluid maxImageWidth"></img><br>
                         A constant-height, contact mode atomic force microscope/profilometer. 
                         Github repository (contains firmware and schematics) here: 
                         <a 
@@ -34,7 +34,7 @@
                     </p>
 
                     <p>
-                        <img src="macroscope/annotatedmain.jpg" class="img-fluid maxImageWidth"></img><br>
+                        <img src="../macroscope/annotatedmain.jpg" class="img-fluid maxImageWidth"></img><br>
                         This was our final project for MECH 423, a course at UBC. 
                         
                         It is intended to be a simple demonstration of the atomic force microscopy principle, using a pair of linear motion stages to scan a flexible measurement probe 
@@ -49,7 +49,7 @@
                     </p>
 
                     <p>
-                        <img src="macroscope/probeclose.jpg" class="img-fluid maxImageWidth"></img><br>
+                        <img src="../macroscope/probeclose.jpg" class="img-fluid maxImageWidth"></img><br>
                         The probe is mounted as a cantilever beam on the end of the load cell. 
                         It is cut from a sheet of brass and is tuned to give a static deflection of 50 micron per centinewton.
                         There is a tradeoff here: a higher stiffness cantilever will ultimately give a higher spatial resolution, 
@@ -60,7 +60,7 @@
                     </p>
 
                     <p>
-                        <img src="macroscope/annotatedadc.jpg" class="img-fluid maxImageWidth"></img><br>
+                        <img src="../macroscope/annotatedadc.jpg" class="img-fluid maxImageWidth"></img><br>
                         The load cell signal is received by a 24-bit ADC (ADS1256). The ADC board is mounted close to the load cell, 
                         to limit induced noise from long load cell wiring. The ADC is on a commercially available
                         breakout board, which is modified to allow for a ratiometric configuration of the load cell and ADC.
@@ -69,23 +69,23 @@
                     </p>
 
                     <p>
-                        <img src="macroscope/annotatedcontroller.png" class="img-fluid maxImageWidth"></img><br>
+                        <img src="../macroscope/annotatedcontroller.png" class="img-fluid maxImageWidth"></img><br>
                         The controller board hosts the rest of the electronics - the microcontroller, 
                         the reference voltage for the ADC and load cell, and the motor drivers.
                     </p>
 
                     <p>
-                        <img src="macroscope/GUI.png" class="img-fluid maxImageWidth"></img><br>
+                        <img src="../macroscope/GUI.png" class="img-fluid maxImageWidth"></img><br>
                         The system is programmable using a set of SCPI-like commands, and it can be controlled by manually writing commands in a serial terminal or by using a companion GUI.
                         Github repository: <a href="https://github.com/JarofMolasses/macroscope_control">https://github.com/JarofMolasses/macroscope_control</a>
                     </p>
 
                     <p>
                         <h4>Results</h4>
-                        <img src="macroscope/nickelTest88x88.jpg" class="img-fluid maxImageWidth"></img><br>
+                        <img src="../macroscope/nickelTest88x88.jpg" class="img-fluid maxImageWidth"></img><br>
                         <i>Scan of a 5c coin with 88x88 XY resolution.</i><br><br>
 
-                        <img src="macroscope/stepTest100micron.jpg" class="img-fluid maxImageWidth"></img><br>
+                        <img src="../macroscope/stepTest100micron.jpg" class="img-fluid maxImageWidth"></img><br>
                         <i>Scan of a small 3d printed test sample with 0.1mm steps. The diagonal striations on the bottom step are the print lines.</i>
 
                         <br><br>

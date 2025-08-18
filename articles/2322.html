@@ -4,7 +4,7 @@
     <div id="header"></div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"> </script>
     <script>
-        $("#header").load("include_head.html");
+        $("#header").load("../include_head.html");
     </script>
     <title> AMREL PPS-2322 </title>
 </head>
@@ -21,7 +21,7 @@
                 <div class="container-fluid maxArticleWidth">
                     <h4 id="2322">AMREL PPS-2322 power supply</h4>
                     <p>
-                        <img src="2322/2322main.jpg" class="img-fluid maxImageWidth maxImageHeight"></img><br>
+                        <img src="../2322/2322main.jpg" class="img-fluid maxImageWidth maxImageHeight"></img><br>
                     </p>
 
                     <p>
@@ -37,7 +37,7 @@
                     <h4> The issues </h4>
                     <h5 id="poweron">Issue 1. Power-on step response</h5>
                     <p>
-                        <img src="2322/enable_overshoot_20V.jpg" class="img-fluid maxImageWidth maxImageHeight"></img><br>
+                        <img src="../2322/enable_overshoot_20V.jpg" class="img-fluid maxImageWidth maxImageHeight"></img><br>
                         Two distinct problems are shown in this power on/off curve. 
                         <li>The constant current limit kicks on every startup - that's the initial linear slope</li>
                         <li>There is overshoot at CC-CV transition and also when the output is disabled</li>
@@ -55,7 +55,7 @@
 
                     <h5 id="multistep">Issue 2. "Multi-step" output</h5>
                     <p>
-                        <img src="2322/enable_multistep.jpg" class="img-fluid maxImageWidth maxImageHeight"></img><br>
+                        <img src="../2322/enable_multistep.jpg" class="img-fluid maxImageWidth maxImageHeight"></img><br>
                         When the supply does not switch into CC mode during power-on - i.e. when 
                         it is allowed to turn on "normally" in CV mode - it looks like it takes several intermediate steps before settling at the programmed setpoint. This is also minor, but also quite ugly. <br>
                         <small><i>The setpoint in that picture is pretty high, but this was done with some of the output capacitance removed so the inrush current was much lower and the limiter wouldn't trip</i></small>
@@ -63,7 +63,7 @@
 
                     <h5 id="CC">Issue 3. Slow CC response </h5>
                     <p>
-                        <img src="2322/CC overshoot.jpg" class="img-fluid maxImageWidth maxImageHeight"></img><br>
+                        <img src="../2322/CC overshoot.jpg" class="img-fluid maxImageWidth maxImageHeight"></img><br>
                         Here's the voltage over a 47 ohm resistor with the output set to 8V and 10mA. The voltage rises to 8V before the current limit kicks in, 
                         in other words a peak 170mA is drawn. It takes around 20ms for the controller to bring the current back down. <br>
                     </p>
@@ -74,25 +74,25 @@
                     and provided a good starting point to try reverse engineering. 
                     
                     <p>
-                        <img src="2322/2322internal.jpg" class="img-fluid maxImageWidth maxImageHeight"></img><br>
+                        <img src="../2322/2322internal.jpg" class="img-fluid maxImageWidth maxImageHeight"></img><br>
                         The main functional components of the unit are the mainboard, the power supply board, and the digital card.
                     </p>
                     <p>
-                        <img src="2322/Front.JPG" class="img-fluid maxImageWidth maxImageHeight"></img><br>
+                        <img src="../2322/Front.JPG" class="img-fluid maxImageWidth maxImageHeight"></img><br>
                         The interesting parts are here, on the mainboard. The digital card connects to the 8-bit ISA connector (Channel 1 signals) and the IDC connector in the bottom left (Channel 2 signals).
                         The digital card uses an 8051 at its core, or more specifically a 80C31 clone. It might be worthwhile to make a replacement with a modern microcontroller.
                         The communication between the card and each channel is done through photocouplers, and each channel is completely separate on the mainboard. 
                     </p>
 
                     <p>
-                        <img src="2322/reverse.jpg" class="img-fluid maxImageWidth maxImageHeight"></img><br>
+                        <img src="../2322/reverse.jpg" class="img-fluid maxImageWidth maxImageHeight"></img><br>
                         Here I draw all the visible traces (front copper in red, back copper in blue) over a picture of the board to make it a little easier to see the connections at a glance. 
                         For now, I've only reverse engineered Channel 1, though Channel 2 should be more of the same. 
 
                     <h5 id="DAC">DAC sample and hold</h5>
                     <p>
-                        <img src="2322/DAC.png" class="img-fluid maxImageWidth maxImageHeight"></img><br>
-                        <img src="2322/sampleandhold.png" class="img-fluid maxImageWidth maxImageHeight"></img><br>
+                        <img src="../2322/DAC.png" class="img-fluid maxImageWidth maxImageHeight"></img><br>
+                        <img src="../2322/sampleandhold.png" class="img-fluid maxImageWidth maxImageHeight"></img><br>
                         The reference voltages for the controllers are generated by an AD7541 12-bit DAC and 4066 CMOS switch in a sample-and-hold configuration. The signal is held by 2x470nF capacitors with a 1k in series, then buffered. 
                         The DAC is also used to generate voltages for a software SAR ADC used to read back the voltage and current.
                         <br><br>
@@ -101,14 +101,14 @@
 
                     <h5 id="output">Output stage</h5>
                     <p>
-                        <img src="2322/outputstage.png" class="img-fluid maxImageWidth maxImageHeight"></img><br> 
+                        <img src="../2322/outputstage.png" class="img-fluid maxImageWidth maxImageHeight"></img><br> 
                         A "floating regulator" type output stage. The unregulated input 60VDC has no shared ground with the rest of the circuit. Circuit ground is at the 
                         emitter of the series pass transistors (RMI = GND), while signal ground is at the output positive rail (+OUT = SGND). This circuit is nearly identical to that of the LPS-305 negative rail. 
                     </p>
 
                     <h5 id="measure">Measurement</h5>
                     <p>
-                        <img src="2322/SAR.png" class="img-fluid maxImageWidth maxImageHeight"></img><br> 
+                        <img src="../2322/SAR.png" class="img-fluid maxImageWidth maxImageHeight"></img><br> 
                         Readback is done using a software SAR ADC running on the microcontroller.
                         The DAC output is periodically used to generate reference voltages for the measurement comparators.
 
@@ -117,11 +117,11 @@
                     
                     <h5 id="control">Controllers</h5>
                     <p>
-                        <img src="2322/control.png" class="img-fluid maxImageWidth maxImageHeight"></img><br>
+                        <img src="../2322/control.png" class="img-fluid maxImageWidth maxImageHeight"></img><br>
                         A typical diode-OR CV/CC control sharing scheme. The top branch is a pure integrator which handles current control. The bottom branch
                         is a filtered PID controller for voltage control.
                         <br><br>
-                        <img src="2322/output closeup.png" class="img-fluid maxImageWidth maxImageHeight"></img><br>
+                        <img src="../2322/output closeup.png" class="img-fluid maxImageWidth maxImageHeight"></img><br>
                         The output sense nodes:
                         <li>The input to shunt resistor \(R_{s}\) is node RMI (high side), and the output is node RMO (low side). </li>
                         <li>The global circuit ground is at RMI, and the signal ground (for the controller setpoint signals) is at RMO. </li>
@@ -131,7 +131,7 @@
                     <h6><b>Current controller</b></h6>
                     <p>
                         The output current through \(R_{s}\) is sensed by measuring voltage at RMO, where $$-V_{RMO} = I_{out}R_S = I_{out}/10.$$
-                        <img src="2322/CC controller.png" class="img-fluid maxImageWidth maxImageHeight"></img><br>
+                        <img src="../2322/CC controller.png" class="img-fluid maxImageWidth maxImageHeight"></img><br>
                         The current control is done by U33A, which compares current programming signal CCP to RMO. U32B converts CCP from signal ground reference to circuit ground reference, and inverts it.
                         R61 and R69 attenuate CCP by 50, and with a maximum DAC output voltage of 10V, the maximum programmable CCP signal is 200mV and the maximum programmable current is 2A. 
                         Ultimately, the controller setpoint can be expressed as
@@ -145,7 +145,7 @@
 
                         and the controller crossover frequency is given by $$f_{i} = \frac{1}{2\pi R_1 C_1} = 10.61\mathrm{kHz} .$$
 
-                        <img src="2322/all CC frd.png" class="img-fluid maxImageWidth maxImageHeight"></img><br>
+                        <img src="../2322/all CC frd.png" class="img-fluid maxImageWidth maxImageHeight"></img><br>
                         <small><i>LTspice frequency sweeps. Top to bottom: 1. open loop gain \(C(s)P(s) = I_{out}/e \) ,  2. plant gain \(P(s)=I_{out}/V_{i}\) , 3. controller gain \(C(s)=V_{i}/e\)</i></small>
                         <br><br>
 
@@ -159,7 +159,7 @@
 
                     <h6><b>Voltage controller</b></h6>
                     <p>
-                        <img src="2322/CV controller.png" class="img-fluid maxImageWidth maxImageHeight"></img><br>
+                        <img src="../2322/CV controller.png" class="img-fluid maxImageWidth maxImageHeight"></img><br>
                         The voltage controller at U33B is sort of shaped like a Type-3 compensator, and is in effect a filtered derivative PID controller. 
                         The controller's setpoint is fixed at signal ground, i.e.:
                         $$V_{Vset} = V_{S+}.$$
@@ -178,7 +178,7 @@
                         $$\omega_{z2} = \frac{1}{C_dR_d} \rightarrow f_{z2} = 445\mathrm{kHz},$$
                         $$\omega_{p} = \frac{1}{C_d (R_2//R_d)} \rightarrow f_{p} = 16\mathrm{kHz}.$$
                         <br>
-                        <img src="2322/all CV frd.png" class="img-fluid maxImageWidth maxImageHeight"></img><br>
+                        <img src="../2322/all CV frd.png" class="img-fluid maxImageWidth maxImageHeight"></img><br>
                         <small><i>LTspice frequency sweeps. Top to bottom: 1. open loop gain \(C(s)P(s) = V_{out}/e\) , 2. plant gain \(P(s)=V_{out}/V_{v}\) , 3. \(C(s)=V_{v}/e\)</i></small><br>
                         With the output set to 30V and a 10k load, the phase margin is around 74 degrees, and the system crossover frequency is 4.6kHz. 
                     </p>
@@ -186,19 +186,19 @@
                     <h4 id="fix">Possible fixes: power-on issues</h5>
                     <h6><b>Multistep waveforms and sequencing problem</b></h6>
                     <p>
-                        <img src="2322/sample and hold demo.jpg" class="img-fluid maxImageWidth maxImageHeight"></img><br>
+                        <img src="../2322/sample and hold demo.jpg" class="img-fluid maxImageWidth maxImageHeight"></img><br>
                         Here we see the current programming and voltage programming waveforms at the output of the 4066. The two waveforms above show the CVP_PULSE signal and the CVP_SWITCH signal, 
                         and the other pair are the CCP_PULSE and CCP_SWITCH signals. From this it's clear that the time constant of the RC network in the sample and hold is too long 
                         for the programming pulse duration, and it takes a couple cycles to get to the programmed level, on both rise and fall. This is what causes the "multistep" power-on/off waveform.
                         <br><br>
-                        <img src="2322/sample and hold bad spice.png" class="img-fluid maxImageWidth maxImageHeight"></img><br>
+                        <img src="../2322/sample and hold bad spice.png" class="img-fluid maxImageWidth maxImageHeight"></img><br>
                         In SPICE, we can confirm this is expected behaviour based on the selected R, C and programming pulse duration. 
                         Unless I'm missing something, this just looks like a design error.
 
                         <br><br>
                         A more subtle issue we can see here is the sequencing of the CVP and CCP signals. Notice that the CVP signal is always enabled before the CCP signal, which causes the current
                         limit to kick in on every startup regardless of the programmed current. 
-                        <img src="2322/voltage then current.jpg" class="img-fluid maxImageWidth maxImageHeight"></img><br>
+                        <img src="../2322/voltage then current.jpg" class="img-fluid maxImageWidth maxImageHeight"></img><br>
                         <small><i>Waveforms, top to bottom: 1. DAC output, 2. CCP_SWITCH, 3. CVP_SWITCH, 4. Output</i></small>
                         <ol>
                             <li>At idle, both CVP and CCP are set for 0V and 0A. </li>
@@ -243,22 +243,22 @@
                     <h4>Possible fixes: loop compensation</h5>
                     <h6><b>Voltage loop</b></h6>
                     <p>
-                        <img src="2322/simulated overshoots.png" class="img-fluid maxImageWidth maxImageHeight"></img><br>
+                        <img src="../2322/simulated overshoots.png" class="img-fluid maxImageWidth maxImageHeight"></img><br>
                         Now to dealing with the overshoot. Taking the reverse engineered circuit into LTspice, it seems that the overshoot at the CC/CV transition and the falling edge are both expected.<br><br>
 
-                        <img src="2322/measured overshoot negative.png" class="img-fluid maxImageWidth maxImageHeight"></img><br>
+                        <img src="../2322/measured overshoot negative.png" class="img-fluid maxImageWidth maxImageHeight"></img><br>
                         Looking at the negative overshoot, for example, the simulated overshoot is remarkably close to what we can measure on the unit. <br><br>
 
-                        <img src="2322/CV controller.png" class="img-fluid maxImageWidth maxImageHeight"></img><br>
+                        <img src="../2322/CV controller.png" class="img-fluid maxImageWidth maxImageHeight"></img><br>
                         The easiest modification which all but eliminates the overshoots in either direction is reducing the value of C48 from 6n8 to the ~100pF range. This fundamentally changes the controller behaviour,
                         and essentially removes the derivative action. <br><br>
 
-                        <img src="2322/enable_overshoot_20V_fix_simulated.png" class="img-fluid maxImageWidth maxImageHeight"></img><br>
+                        <img src="../2322/enable_overshoot_20V_fix_simulated.png" class="img-fluid maxImageWidth maxImageHeight"></img><br>
                         With C48 = 100pF, there is zero negative overshoot. There remains a very minor overshoot at the CC/CV transition, but it is below 50mV and very hard to notice. 
                         The CC-CV transition is kind of an "extreme" situation, so this is probably acceptable. More acceptable than several hundred mV, at least.
                         <br><br>
 
-                        <img src="2322/all CV frd 100p.png" class="img-fluid maxImageWidth maxImageHeight"></img><br>
+                        <img src="../2322/all CV frd 100p.png" class="img-fluid maxImageWidth maxImageHeight"></img><br>
                         Using C48 = 100pF pushes the crossover frequency of the controller up to 350kHz and costs some phase margin, which drops by around 10 degrees compared to the stock configuration with the same loading condition. 
                         The phase margin is around 64 degrees in this case.<br><br>
                         Using C48 = 200pF results in a larger overshoot (100mV CC-CV overshoot and -20mV negative overshoot), but it yields a very good >80 degrees phase margin due to better compensation of the plant characteristics.
@@ -279,18 +279,18 @@
                     </p>
                     <h6><b>Current loop</b></h6>
                     <p>
-                        <img src="2322/simulated current overshoot.png" class="img-fluid maxImageWidth maxImageHeight"></img><br>
+                        <img src="../2322/simulated current overshoot.png" class="img-fluid maxImageWidth maxImageHeight"></img><br>
                         Like with the real test, here we set up the LTspice model to deliver ~8V/10mA into a 47R load.
                         The simulation seems to show the slow CC regulation is expected.<br><br>
-                        <img src="2322/CC controller.png" class="img-fluid maxImageWidth"></img><br>
+                        <img src="../2322/CC controller.png" class="img-fluid maxImageWidth"></img><br>
                         In the current controller, changing C40 from 15nF to 1nF is enough to suppress the overshoot to below 20mA with any set voltage. 
                         <br><br>
-                        <img src="2322/current overshoot 1nF.png" class="img-fluid maxImageWidth maxImageHeight"></img><br>
+                        <img src="../2322/current overshoot 1nF.png" class="img-fluid maxImageWidth maxImageHeight"></img><br>
                         Again, the load is a 47R resistor, and the current limit is set to 10mA. 
                         Increasing the set voltage to the theoretical maximum 35V results in just under 13mA peak current, and this is probably acceptable current limiting performance.
                         <br><br>
 
-                        <img src="2322/all CC frd 1n.png" class="img-fluid maxImageWidth maxImageHeight"></img><br>    
+                        <img src="../2322/all CC frd 1n.png" class="img-fluid maxImageWidth maxImageHeight"></img><br>    
                         However, looking at the frequency response, the phase margin of the CC system is now around 47 degrees and the crossover frequency is 45kHz. 
                         This is getting a bit too close to potential instability for my taste. 
                         <br><br>
@@ -372,11 +372,11 @@
                             </tr>
                         </table><br>
 
-                        <img src="2322/multistep fixed.jpg" class="img-fluid maxImageWidth maxImageHeight"></img><br>
+                        <img src="../2322/multistep fixed.jpg" class="img-fluid maxImageWidth maxImageHeight"></img><br>
                         With a set 12V and 1A, the power-on is a clean step. No overshoot on the power-off. It looks like the output caps quickly
                         drain through the shunt resistor on output disable.<br><br>
 
-                        <img src="2322/overshoot fixed.jpg" class="img-fluid maxImageWidth maxImageHeight"></img><br>
+                        <img src="../2322/overshoot fixed.jpg" class="img-fluid maxImageWidth maxImageHeight"></img><br>
                         With a set 12V and 0.050A, the output caps trigger the current limit during the startup. That is pretty much unavoidable unless the output capacitance is decreased, but that 
                         has a negative effect on both output noise and loop stability. 
                         But this time, very little overshoot on the mode crossover. Much better.<br><br>

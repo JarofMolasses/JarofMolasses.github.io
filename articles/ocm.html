@@ -4,7 +4,7 @@
     <div id="header"></div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"> </script>
     <script>
-        $("#header").load("include_head.html");
+        $("#header").load("../include_head.html");
     </script>
     <title> OCM (Opticlaw Mod) </title>
 </head>
@@ -22,7 +22,7 @@
                 <div class="container-fluid maxArticleWidth">
                 <a><h4> OCM (Opticlaw Mod) </h4></a>
                 <p>                        
-                    <img src="OCM/main.jpg" class="img-fluid maxImageWidth"></img><br>
+                    <img src="../OCM/main.jpg" class="img-fluid maxImageWidth"></img><br>
                     A variable-diameter endoscope test fixture mount for Intuitive Surgical. <br>
                     <small><i>With Capstone team: Phoebe Cheung, Cameron Lee-Ming, and Adam Metwally. </i></small>
                 </p>
@@ -35,12 +35,12 @@
                 </p>
 
                 <p>
-                    <img src="OCM/errorchecking.jpg" class="img-fluid maxImageWidth"></img><br>
+                    <img src="../OCM/errorchecking.jpg" class="img-fluid maxImageWidth"></img><br>
                     The endoscope is held between two arms, top and bottom. The top and bottom arms are coupled using a gear mechanism, and the combination of the arm geometry and the gear ratio ensures that any circle within a range of diameters will be held at the same center. 
                 </p>
                 
                 <p>
-                    <img src="OCM/detentsketch.jpg" class="img-fluid maxImageWidth"></img><br>
+                    <img src="../OCM/detentsketch.jpg" class="img-fluid maxImageWidth"></img><br>
                     A rough sketch of the detent mechanism, which mounts underneath the bottom arm. The mechanism, under spring tension, locks the arms in either the open or closed positions.
                 </p>
 
@@ -52,19 +52,19 @@
                 </p>
 
                 <p>
-                    <img src="OCM/curvegeneration.jpg" class="img-fluid maxImageWidth"></img><br>
+                    <img src="../OCM/curvegeneration.jpg" class="img-fluid maxImageWidth"></img><br>
                     The function of the mount relies on the specific geometry of the bottom arm in the clamp, which contains two numerically defined curves. In the figure above, the blue and orange curves trace the profile of the bottom arm. 
                     The green curve shows the movement of the contact point of the top arm. Here, the design is intended to work for radii up to r_max=10mm, the gear ratio is C=4/3, the distance between the arm pivots and the virtual center point is R=19.9mm. The two arm pivots are placed on an arc (not shown) and the distance between them is beta=1.05 radians.  The curves were generated using a python script.
                 </p>
 
 
                 <p>
-                    <img src="OCM/final.jpg" class="img-fluid maxImageWidth"></img><br>
+                    <img src="../OCM/final.jpg" class="img-fluid maxImageWidth"></img><br>
                     Final project showcase, with dummy endoscope installed in testing apparatus (left) and older prototypes (right). <br>
                 </p>
 
                 <p>
-                    <img src="OCM/finalcrop.jpg" class="img-fluid maxImageWidth"></img><br>
+                    <img src="../OCM/finalcrop.jpg" class="img-fluid maxImageWidth"></img><br>
                     Close up of testing apparatus and GUI. 
                     At each end of the test shaft, a pair of dial indicators measures the center position of a test cylinder (relative to some reference cylinder's center position). From the pair of center positions, the relative pitch and yaw of the shaft could also be measured.
                     The repeatability of the mount was tested by installing and uninstalling steel driveshafts of different diameters and measuring the variance in the position of the shaft.
@@ -73,7 +73,7 @@
                 </p>
 
                 <p>
-                    <img src="OCM/datalogger.jpg" class="img-fluid maxImageWidth"></img><br>
+                    <img src="../OCM/datalogger.jpg" class="img-fluid maxImageWidth"></img><br>
                     The datalogger was built around an STM32F1 microcontroller.
                 </p>
 
