@@ -50,18 +50,18 @@
                     <p>
                         <img src="../macroscope/frameortho.png" class="img-fluid maxImageWidth"></img><br>
                         The frame experiences very little loading from the measurement process, because our target probe force is on the order of 1cN. 
-                        Still, for a precision machine, stiffness is a priority. Structural connections are done with large plates to increase joint rigidity. 2020 and 2040 aluminum extrusions
-                        make up the majority of the frame, due to their high rigidity-to-convenience ratio. Components can be positioned very freely, especially useful for 
+                        Still, for a "precision machine", stiffness is a priority. Structural connections are done with large plates to increase joint rigidity. 2020 and 2040 aluminum extrusions
+                        make up the majority of the frame, due to their high rigidity-to-convenience ratio. Components can be positioned freely, especially useful for 
                         setting the position of the probe at an appropriate height above the sample platform.
                         <br><br>
                         <img src="../macroscope/frameannotated.png" class="img-fluid maxImageWidth"></img><br>
-                        The arrangement of the linear stages is fairly straightforward. The smaller, "fast scanning" stage on top is responsible for scanning across each raster line and the larger 
+                        The arrangement of the linear stages is straightforward. The smaller, "fast scanning" stage on top is responsible for scanning across each raster line and the larger 
                         "slow scanning" stage below moves the sample to the next raster line. The slow scanning stage is larger to make it easier to bring the sample platform out from underneath the 
                         probe for sample mounting. The motion of the stepper stages is not smooth (on a micron level), and generally to acquire a useful height measurement the sample must come to rest 
                         before the ADC collects samples. 
                         
                         <br><br>
-                        Aside from the structure's intrinsic stability, external factors like thermal expansion and mechanical vibrations are key disturbances which can affect the measurement.
+                        External factors like thermal expansion and mechanical vibrations can also affect the measurement.
                         For a 50-micron resolution target, a sturdy workbench and a silicone sheet as damping was enough to achieve good scan results. 
                     </p>
                     <h5>Probe design</h5>
@@ -73,7 +73,7 @@
                         <br><br>
                         <img src="../macroscope/proberadius2.jpg" class="img-fluid maxImageWidth"></img><br>
                         <i>Probe tip, compared to 0.5mm (500 micron) pencil lead. Magnification 80X</i><br>
-                        The brass probes directly off the waterjet have fairly coarse edges and large tip radii. A quick hone can bring the corner to a very sharp point.
+                        The brass probes directly off the waterjet have fairly coarse edges, but a quick hone on a sharpening stone can bring the corner to a very sharp point.
                         Though the exact tip radius is not known we could show that it was possible to resolve 50 micron features.
                         <br><br>
                         The sample is mounted on a kinematic adjustment platform, and trimmed to be level with the XY stage and at the right height. 
@@ -86,7 +86,7 @@
                         higher than the stiffness of the probe, this is largely negligible.
                     
                         <br><br>
-                        There is a tradeoff here: a higher stiffness cantilever will ultimately give a higher spatial resolution in a constant-height AFM using a load cell, 
+                        There is a tradeoff here: a higher stiffness cantilever will give a higher spatial resolution in a constant-height AFM using a load cell, 
                         but the tip-sample interaction force will be higher. Excessive interaction forces could distort measurements or damage the probe and sample surface.
                         <br><br>
                         A small stack of magnets mounted at the end of the probe allow the probe to be raised and lowered by the voice coil mounted above it. 
@@ -135,7 +135,7 @@
                         In X and Y the minimum resolution is limited primarily by the radius of the probe tip at around 0.05mm. 
                         
                         <br><br>
-                        The scanning process is slow, mostly because the assembly needs time to settle before each measurement is taken. 
+                        The scanning process is slow, mostly because the structure needs time (~0.5 seconds) to settle before each measurement is taken. 
                         This could be improved using smoother stepper driving (e.g. Trinamic 256-step drivers), reducing the Q-factor (e.g. by adding damping to the leadscrew assemblies) 
                         or using mechanically "quieter" actuators (such as a voice coil or piezo actuators).
 
