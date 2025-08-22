@@ -41,24 +41,64 @@
                         across a test sample. The local height of the sample deflects the probe, and the probe deflection is 
                         measured using a load cell. Our target resolution was a voxel size of 50 micron. 
 
-                        A voice coil lifts and drops the probe, and in the future could in principle allow for a "tapping mode" 
-                        measurement where the tip oscillates allowing for less destructive tip-sample interaction.
-
                         <br><br>
-                        In this project, I primarily handled the electronics half of the design.
+                        In this project, I primarily handled the electronics and the sensing mechanics. 
+                        I later revisited the project and redesigned the XY stage to make it more compact (images in this article are of the redesign).
                     </p>
 
+                    <h5>Mechanical structure</h5>
+                    <p>
+                        <img src="../macroscope/frameortho.png" class="img-fluid maxImageWidth"></img><br>
+                        The frame experiences very little loading from the measurement process, because our target probe force is on the order of 1cN. 
+                        Still, for a precision machine, stiffness is a priority. Structural connections are done with large plates to increase joint rigidity. 2020 and 2040 aluminum extrusions
+                        make up the majority of the frame, due to their high rigidity-to-convenience ratio. Components can be positioned very freely, especially useful for 
+                        setting the position of the probe at an appropriate height above the sample platform.
+                        <br><br>
+                        <img src="../macroscope/frameannotated.png" class="img-fluid maxImageWidth"></img><br>
+                        The arrangement of the linear stages is fairly straightforward. The smaller, "fast scanning" stage on top is responsible for scanning across each raster line and the larger 
+                        "slow scanning" stage below moves the sample to the next raster line. The slow scanning stage is larger to make it easier to bring the sample platform out from underneath the 
+                        probe for sample mounting. The motion of the stepper stages is not smooth (on a micron level), and generally to acquire a useful height measurement the sample must come to rest 
+                        before the ADC collects samples. 
+                        
+                        <br><br>
+                        Aside from the structure's intrinsic stability, external factors like thermal expansion and mechanical vibrations are key disturbances which can affect the measurement.
+                        For a 50-micron resolution target, a sturdy workbench and a silicone sheet as damping was enough to achieve good scan results. 
+                    </p>
+                    <h5>Probe design</h5>
                     <p>
                         <img src="../macroscope/probeclose.jpg" class="img-fluid maxImageWidth"></img><br>
-                        The probe is mounted as a cantilever beam on the end of the load cell. 
-                        It is cut from a sheet of brass and is tuned to give a static deflection of 50 micron per centinewton.
-                        There is a tradeoff here: a higher stiffness cantilever will ultimately give a higher spatial resolution, 
-                        but the tip-sample interaction force will be higher.
+                        <img src="../macroscope/probecad.png" class="img-fluid maxImageWidth"></img><br>
+                        The sensing probe is mounted as a cantilever on the end of the beam-type load cell. 
+                        It is cut from a sheet of brass and is tuned to give a static deflection of 50 micron per centinewton. Brass was chosen for its Young's modulus and machinability. 
+                        <br><br>
+                        <img src="../macroscope/proberadius2.jpg" class="img-fluid maxImageWidth"></img><br>
+                        <i>Probe tip, compared to 0.5mm (500 micron) pencil lead. Magnification 80X</i><br>
+                        The brass probes directly off the waterjet have fairly coarse edges and large tip radii. A quick hone can bring the corner to a very sharp point.
+                        Though the exact tip radius is not known we could show that it was possible to resolve 50 micron features.
+                        <br><br>
+                        The sample is mounted on a kinematic adjustment platform, and trimmed to be level with the XY stage and at the right height. 
+                        The probe should be set with a light preload to ensure the surface topography can be fully captured. Naturally, there is a limited height range allowed.
+                        <br><br>
+                        As the probe is driven across the surface of the sample, a force is applied to the load cell corresponding to the height of the sample. 
+                        This is functionally a sort of "constant height" AFM scanning, the most rudimentary original method.
+                        
+                        Strictly speaking, the load on the end of the probe also acts on the load cell itself, causing a non-zero deflection of the load cell body. Because the stiffness of the load cell is much 
+                        higher than the stiffness of the probe, this is largely negligible.
                     
                         <br><br>
-                        A small stack of magnets at the end of the probe allow the probe to be raised and lowered by the voice coil mounted above it.
+                        There is a tradeoff here: a higher stiffness cantilever will ultimately give a higher spatial resolution in a constant-height AFM using a load cell, 
+                        but the tip-sample interaction force will be higher. Excessive interaction forces could distort measurements or damage the probe and sample surface.
+                        <br><br>
+                        A small stack of magnets mounted at the end of the probe allow the probe to be raised and lowered by the voice coil mounted above it. 
+                        The simple probe is only well suited to scanning in one direction, so the probe is reset after each raster line by lifting the probe and 
+                        setting the tip back down at the start of the next line.
+                        <br><br>
+                        The noise of the ADC, the stiffness of the probe and the sensitivity of the load cell define the Z resolution. The stepper stage
+                        resolution and the probe tip radius determine the X and Y resolution.
+
                     </p>
 
+                    <h5>Sensing electronics</h5>
                     <p>
                         <img src="../macroscope/annotatedadc.jpg" class="img-fluid maxImageWidth"></img><br>
                         The load cell signal is received by a 24-bit ADC (ADS1256). The ADC board is mounted close to the load cell, 
@@ -74,28 +114,43 @@
                         the reference voltage for the ADC and load cell, and the motor drivers.
                     </p>
 
+                    <h5>Software interface</h5>
                     <p>
                         <img src="../macroscope/GUI.png" class="img-fluid maxImageWidth"></img><br>
                         The system is programmable using a set of SCPI-like commands, and it can be controlled by manually writing commands in a serial terminal or by using a companion GUI.
-                        Github repository: <a href="https://github.com/JarofMolasses/macroscope_control">https://github.com/JarofMolasses/macroscope_control</a>
+                        A GUI was developed using Winforms for this purpose: <a href="https://github.com/JarofMolasses/macroscope_control">https://github.com/JarofMolasses/macroscope_control</a>
                     </p>
 
                     <p>
                         <h4>Results</h4>
                         <img src="../macroscope/nickelTest88x88.jpg" class="img-fluid maxImageWidth"></img><br>
-                        <i>Scan of a 5c coin with 88x88 XY resolution.</i><br><br>
+                        <i>Scan of a 5c coin with 0.25mm grid size.</i><br><br>
 
                         <img src="../macroscope/stepTest100micron.jpg" class="img-fluid maxImageWidth"></img><br>
-                        <i>Scan of a small 3d printed test sample with 0.1mm steps. The diagonal striations on the bottom step are the print lines.</i>
+                        <i>Scan of a small 3d printed test sample with 0.1mm stepped features, using 0.05mm grid size. The diagonal striations on the bottom step are the top layer print lines.</i>
 
                         <br><br>
-                        We were able to get some pretty nice scans out of this simple setup. 
-                        Pending a proper analysis and calibration, a conservative estimate of the minimum Z-height resolution is 0.01mm. In X and Y the minimum resolution is limited by the radius of the tip at around 0.05mm. 
+                        We were able to get some nice scans out of this simple setup. 
+                        A conservative estimate of the Z-height resolution is 0.01mm, based on the input noise of the ADC compared the sensitivity of the probe.
+                        In X and Y the minimum resolution is limited primarily by the radius of the probe tip at around 0.05mm. 
                         
                         <br><br>
-                        The scanning process is slow, primarily because the stepper stages need time to settle before each measurement is taken.
-                        This could be improved using smoother stepper actuation (perhaps a Trinamic driver) or using a different, "quieter" actuator (such as a voice coil).
-                        
+                        The scanning process is slow, mostly because the assembly needs time to settle before each measurement is taken. 
+                        This could be improved using smoother stepper driving (e.g. Trinamic 256-step drivers), reducing the Q-factor (e.g. by adding damping to the leadscrew assemblies) 
+                        or using mechanically "quieter" actuators (such as a voice coil or piezo actuators).
+
+                        <br><br>
+                        <h5>Considerations for nanometer-precision AFM</h5>
+                        <i>Steppers are very convenient and allow for relatively accurate open-loop control over short distances, but cannot achieve nanometer precision. They also get very hot.
+                        For that level of resolution, piezo actuators are the status quo.
+                        In real atomic force microscopy, low temperature coefficient materials like Invar and active vibration-isolating tables are also often used to mitigate external disturbances. 
+                        Even so, AFM is still generally less picky with conditions than SEM or TEM, in that it can easily be done without vacuum.
+
+                        <br><br>
+                        Actual nanometer-resolution AFMs often use a "variable height, tapping mode" scanning. They have a third Z-axis motion stage which maintains 
+                        a constant tip-sample interaction via PID control, and the probe oscillates as it traverses the sample surface. 
+                        In these implementations, changes in the amplitude and frequency of the probe oscillation are used to infer the tip-sample distance. 
+                        The measurement of the probe movement is usually not force-based, instead an optical lever is common. </i>
                     </p>
 
 
@@ -104,6 +159,7 @@
 
             <div class = "col-2">
                 <p>
+                    <small><i>(Updated August 2025)</i></small><br>
                     <small><i>December 2023</i></small>
                 </p>
                 
